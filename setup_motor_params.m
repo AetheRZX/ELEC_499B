@@ -4,7 +4,7 @@ lambda_m = 0.1;
 P = 4;
 
 J = 0.1;
-D_m = 0.1;
+D_m = 0.001;
 
 tau_s = L_ss/R_s;
 
@@ -19,3 +19,5 @@ phi_A_rad = phi_A_deg * pi/180;
 phi_B_rad = phi_B_deg * pi/180;
 phi_C_rad = phi_C_deg * pi/180;
 Ts_motor = 1e-6;
+Ke = 0.1;
+Kt = P/2 * lambda_m;
