@@ -22,5 +22,5 @@ phi_C_rad = phi_C_deg * pi/180;
 
 
 Ts_motor = 1e-6;
-Ke = 0.1;
+Ke = 2;
 Kt = P/2 * lambda_m;
