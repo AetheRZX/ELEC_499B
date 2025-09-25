@@ -4,7 +4,7 @@ L_ss = 0.45e-3;
 lambda_m = 21.5e-3;
 P = 8;
 J = 12e-4;
-D_m = 1e-5;
+D_m = 1e-7;
 tau_s = L_ss/R_s;
 
 % J = 0.1;
