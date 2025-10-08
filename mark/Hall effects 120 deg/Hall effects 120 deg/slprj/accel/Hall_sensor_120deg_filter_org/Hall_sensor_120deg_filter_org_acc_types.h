@@ -1,0 +1,5 @@
+#ifndef Hall_sensor_120deg_filter_org_acc_types_h_
+#define Hall_sensor_120deg_filter_org_acc_types_h_
+typedef struct P_Hall_sensor_120deg_filter_org_T_
+P_Hall_sensor_120deg_filter_org_T ;
+#endif
