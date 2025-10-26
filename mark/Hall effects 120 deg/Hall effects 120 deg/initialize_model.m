@@ -46,4 +46,5 @@ switch control_mode
 end
 MTPA_master_gain = 3;
 
+omega_min = 50;
 % define target values
