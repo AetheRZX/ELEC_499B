@@ -1,6 +1,6 @@
 %% ==============================================================
 %  Hall Sensor LUT Calibration from Simulink Logged Data
-%  - Uses: state_out (Hall state), tau_corr_now (s)
+%  - Uses: state_out (Hall state), tau_corr_out (s, filter output)
 %  - Input: out.logsout or logsout (Dataset)
 %  - Output: phi_corr_LUT (Nx1, rad) and Simulink.Parameter
 % ==============================================================
@@ -18,9 +18,9 @@ else
            'After running the model you should have either ''out.logsout'' or ''logsout'' in the workspace.']);
 end
 
-%% 2. Extract state_out and tau_corr_now timeseries
-
 elemNames = logsout_ds.getElementNames;
+
+%% 2. Extract state_out and tau_corr_out timeseries
 
 % --- Hall state ---
 if any(strcmp('state_out', elemNames))
@@ -29,11 +29,11 @@ else
     error('Could not find signal ''state_out'' in logsout. Available names: %s', strjoin(elemNames, ', '));
 end
 
-% --- tau_corr_now ---
-if any(strcmp('tau_corr_now', elemNames))
-    tau_sig = logsout_ds.getElement('tau_corr_now');
+% --- tau_corr_out (filter correction term) ---
+if any(strcmp('tau_corr_out', elemNames))
+    tau_sig = logsout_ds.getElement('tau_corr_out');
 else
-    error('Could not find signal ''tau_corr_now'' in logsout. Available names: %s', strjoin(elemNames, ', '));
+    error('Could not find signal ''tau_corr_out'' in logsout. Available names: %s', strjoin(elemNames, ', '));
 end
 
 state_ts = state_sig.Values;   % timeseries
@@ -48,7 +48,8 @@ t_tau   = tau_ts.Time(:);
 tau_raw = tau_ts.Data(:);
 tau_raw = tau_raw(:);               % column
 
-% Resample tau_corr onto the state_out time base
+% Resample tau_corr_out onto the state_out time base.
+% 'previous' is good since tau_corr_out is piecewise-constant between updates.
 tau_corr = interp1(t_tau, tau_raw, t_state, 'previous', 'extrap');
 
 % Adopt state_out time base
@@ -68,13 +69,15 @@ if have_omega_signal
     t_omega     = omega_ts.Time(:);
     omega_raw   = omega_ts.Data(:);
     omega_raw   = omega_raw(:);
+
+    % Resample onto same time base t
     omega_e_vec = interp1(t_omega, omega_raw, t, 'linear', 'extrap');
 end
 
 %% 5. Choose a steady-state window for calibration
 
-% Ignore the initial transient – tweak this if needed:
-t_start_steady = t(1) + 1.0;           % ignore first 1 second
+% Ignore the initial transient – tweak this if needed
+t_start_steady = t(1) + 1.0;        % ignore first 1 second
 idx_ss         = (t >= t_start_steady);
 
 if ~any(idx_ss)
@@ -85,7 +88,7 @@ t_ss        = t(idx_ss);
 state_ss    = state(idx_ss);
 tau_corr_ss = tau_corr(idx_ss);
 
-fprintf('tau_corr_ss range before wrapping: [%.4f  %.4f] s\n', ...
+fprintf('tau_corr_ss range: [%.6g  %.6g] s\n', ...
         min(tau_corr_ss), max(tau_corr_ss));
 
 %% 6. Compute electrical speed omega_0
@@ -101,6 +104,7 @@ else
     t_change  = t_ss(k_change);
     dt_change = diff(t_change);
 
+    % Assume 6 Hall states per electrical revolution
     Te_est  = 6 * mean(dt_change);              % electrical period (s)
     omega_0 = 2*pi / Te_est;                    % rad/s
 end
@@ -108,15 +112,7 @@ end
 fprintf('Estimated electrical speed omega_0 = %.3f rad/s (%.1f rpm_elec)\n', ...
         omega_0, omega_0*60/(2*pi));
 
-%% 7. Wrap tau_corr into one Hall sector [0, T_s)
-
-Ts_nom = (pi/3) / omega_0;   % ideal time for 60° electrical
-tau_corr_wrap = mod(tau_corr_ss, Ts_nom);
-
-fprintf('Ts_nom = %.6f s, tau_corr_wrap range: [%.6f  %.6f] s\n', ...
-        Ts_nom, min(tau_corr_wrap), max(tau_corr_wrap));
-
-%% 8. Build LUT: phi_corr = omega_0 * mean( tau_corr_wrap | state )
+%% 7. Build LUT: phi_corr = omega_0 * mean(tau_corr_out | Hall state)
 
 hall_states = unique(state_ss(:));        % whatever values you actually have
 nStates     = numel(hall_states);
@@ -133,19 +129,20 @@ for k = 1:nStates
         continue;
     end
 
-    tau_mean_s     = mean(tau_corr_wrap(idx_s));   % seconds
-    phi_LUT_rad(k) = omega_0 * tau_mean_s;         % radians
-    phi_LUT_deg(k) = phi_LUT_rad(k) * 180/pi;      % degrees
+    tau_mean_s     = mean(tau_corr_ss(idx_s));   % seconds
+    phi_LUT_rad(k) = omega_0 * tau_mean_s;       % radians
+    phi_LUT_deg(k) = phi_LUT_rad(k) * 180/pi;    % degrees
 end
 
 disp('----------------------------------------------');
 disp('Hall correction LUT (phi_corr per state, degrees):');
-table(hall_states, phi_LUT_deg, 'VariableNames', {'HallState','phi_deg'})
+LUT_table = table(hall_states, phi_LUT_deg, ...
+                  'VariableNames', {'HallState','phi_deg'})
 disp('----------------------------------------------');
 
-%% 9. Export as workspace variable and Simulink.Parameter
+%% 8. Export as workspace variable and Simulink.Parameter
 
-phi_corr_LUT = phi_LUT_rad;   % Nx1, radians
+phi_corr_LUT = phi_LUT_rad;   % Nx1, radians – main output you'll use
 
 phi_corr_LUT_param = Simulink.Parameter(phi_corr_LUT);
 phi_corr_LUT_param.CoderInfo.StorageClass = 'ExportedGlobal';
