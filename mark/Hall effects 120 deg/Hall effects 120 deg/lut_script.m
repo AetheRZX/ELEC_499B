@@ -1,120 +1,79 @@
-%% ==============================================================
-%  Hall Sensor LUT Calibration from Simulink Logged Data
-%  - Uses: state_out (Hall state), tau_corr_out (s, filter output)
-%  - Input: out.logsout or logsout (Dataset)
-%  - Output: phi_corr_LUT (Nx1, rad) and Simulink.Parameter
-% ==============================================================
-
 clc;
 
-%% 1. Get the logsout Dataset (works with out.logsout or logsout)
-
+%% 1. Get the logsout Dataset
 if exist('out','var') && isa(out, 'Simulink.SimulationOutput') && isprop(out,'logsout')
     logsout_ds = out.logsout;
 elseif exist('logsout','var') && isa(logsout, 'Simulink.SimulationData.Dataset')
     logsout_ds = logsout;
 else
-    error(['No logged Dataset found.\n' ...
-           'After running the model you should have either ''out.logsout'' or ''logsout'' in the workspace.']);
+    error('No logged Dataset found. Run simulation first.');
 end
 
 elemNames = logsout_ds.getElementNames;
 
-%% 2. Extract state_out and tau_corr_out timeseries
+%% 2. Extract Signals (State, Tau, and Speed)
 
 % --- Hall state ---
 if any(strcmp('state_out', elemNames))
     state_sig = logsout_ds.getElement('state_out');
 else
-    error('Could not find signal ''state_out'' in logsout. Available names: %s', strjoin(elemNames, ', '));
+    error('Could not find "state_out".');
 end
 
-% --- tau_corr_out (filter correction term) ---
+% --- tau_corr_out ---
 if any(strcmp('tau_corr_out', elemNames))
     tau_sig = logsout_ds.getElement('tau_corr_out');
 else
-    error('Could not find signal ''tau_corr_out'' in logsout. Available names: %s', strjoin(elemNames, ', '));
+    error('Could not find "tau_corr_out".');
 end
 
-state_ts = state_sig.Values;   % timeseries
-tau_ts   = tau_sig.Values;     % timeseries
+% --- Speed (Prefer True Omega) ---
+if any(strcmp('omega_r', elemNames))
+    omega_sig = logsout_ds.getElement('omega_r');
+    fprintf('Using TRUE speed (omega_r).\n');
+elseif any(strcmp('omega_e', elemNames))
+    omega_sig = logsout_ds.getElement('omega_e');
+    warning('Using ESTIMATED speed (omega_e).');
+else
+    error('No speed signal found.');
+end
 
-%% 3. Put everything on the SAME time base (state_out time)
+state_ts = state_sig.Values;
+tau_ts   = tau_sig.Values;
+omega_ts = omega_sig.Values;
 
-t_state = state_ts.Time(:);          % time vector for state_out
-state   = double(state_ts.Data(:));  % Hall state values
+%% 3. Sync Time Bases
+% We align everything to the State transitions timestamps
 
-t_tau   = tau_ts.Time(:);
+t = state_ts.Time(:);
+state = double(state_ts.Data(:));
+
+t_tau = tau_ts.Time(:);
 tau_raw = tau_ts.Data(:);
-tau_raw = tau_raw(:);               % column
+% Align Tau to State (Previous value holds)
+tau_vec = interp1(t_tau, tau_raw, t, 'previous', 'extrap');
 
-% Resample tau_corr_out onto the state_out time base.
-% 'previous' is good since tau_corr_out is piecewise-constant between updates.
-tau_corr = interp1(t_tau, tau_raw, t_state, 'previous', 'extrap');
+t_omega = omega_ts.Time(:);
+omega_raw = omega_ts.Data(:);
+% Align Speed to State (Linear interpolation for best accuracy)
+omega_vec = interp1(t_omega, omega_raw, t, 'linear', 'extrap');
 
-% Adopt state_out time base
-t = t_state;
-
-fprintf('Lengths: t = %d, state = %d, tau_corr = %d\n', ...
-        numel(t), numel(state), numel(tau_corr));
-
-%% 4. Optional: electrical speed omega_e (future-proof)
-
-have_omega_signal = any(strcmp('omega_e', elemNames));
-omega_e_vec = [];
-
-if have_omega_signal
-    omega_sig   = logsout_ds.getElement('omega_e');
-    omega_ts    = omega_sig.Values;
-    t_omega     = omega_ts.Time(:);
-    omega_raw   = omega_ts.Data(:);
-    omega_raw   = omega_raw(:);
-
-    % Resample onto same time base t
-    omega_e_vec = interp1(t_omega, omega_raw, t, 'linear', 'extrap');
-end
-
-%% 5. Choose a steady-state window for calibration
-
-% Ignore the initial transient – tweak this if needed
-t_start_steady = t(1) + 1.0;        % ignore first 1 second
-idx_ss         = (t >= t_start_steady);
+%% 4. Steady-State Window
+t_start_steady = t(1) + 1.0; 
+idx_ss = (t >= t_start_steady);
 
 if ~any(idx_ss)
-    error('Steady-state window empty. Decrease t_start_steady or run the sim longer.');
+    error('Steady-state window empty.');
 end
 
-t_ss        = t(idx_ss);
-state_ss    = state(idx_ss);
-tau_corr_ss = tau_corr(idx_ss);
+state_ss = state(idx_ss);
+tau_ss   = tau_vec(idx_ss);
+omega_ss = omega_vec(idx_ss);
 
-fprintf('tau_corr_ss range: [%.6g  %.6g] s\n', ...
-        min(tau_corr_ss), max(tau_corr_ss));
+%% 5. Build LUT using Instantaneous Physics
+% Phi = Tau * Omega
 
-%% 6. Compute electrical speed omega_0
-
-if have_omega_signal
-    omega_0 = mean(omega_e_vec(idx_ss));        % rad/s
-else
-    % Estimate from Hall-state transitions
-    k_change = find(diff(state_ss) ~= 0);
-    if numel(k_change) < 7
-        error('Not enough Hall transitions in steady state to estimate omega.');
-    end
-    t_change  = t_ss(k_change);
-    dt_change = diff(t_change);
-
-    % Assume 6 Hall states per electrical revolution
-    Te_est  = 6 * mean(dt_change);              % electrical period (s)
-    omega_0 = 2*pi / Te_est;                    % rad/s
-end
-
-fprintf('Estimated electrical speed omega_0 = %.3f rad/s (%.1f rpm_elec)\n', ...
-        omega_0, omega_0*60/(2*pi));
-
-%% 7. Build LUT: phi_corr = omega_0 * mean(tau_corr_out | Hall state)
-
-hall_states = unique(state_ss(:));        % whatever values you actually have
+hall_states = unique(state_ss(:));
 nStates     = numel(hall_states);
 
 phi_LUT_rad = zeros(nStates,1);
@@ -125,26 +84,38 @@ for k = 1:nStates
     idx_s = (state_ss == s);
 
     if ~any(idx_s)
-        warning('No samples found for Hall state value %g in steady-state window.', s);
         continue;
     end
 
-    tau_mean_s     = mean(tau_corr_ss(idx_s));   % seconds
-    phi_LUT_rad(k) = omega_0 * tau_mean_s;       % radians
-    phi_LUT_deg(k) = phi_LUT_rad(k) * 180/pi;    % degrees
+    % 1. Get all Tau samples for this state
+    taus_k = tau_ss(idx_s);
+    
+    % 2. Get all Speed samples for this state
+    omegas_k = omega_ss(idx_s);
+    
+    % 3. Calculate Instantaneous Angle for each occurrence
+    %    This accounts for speed ripples.
+    instant_angles = taus_k .* omegas_k;
+    
+    % 4. Average the ANGLES (not the times)
+    phi_LUT_rad(k) = mean(instant_angles);
+    phi_LUT_deg(k) = phi_LUT_rad(k) * 180/pi;
 end
 
+%% 6. Shift Logic (Disabled by default)
+% phi_LUT_rad = circshift(phi_LUT_rad, 1);
+% phi_LUT_deg = circshift(phi_LUT_deg, 1);
+
 disp('----------------------------------------------');
-disp('Hall correction LUT (phi_corr per state, degrees):');
+disp('Hall correction LUT (Instantaneous Calculation):');
 LUT_table = table(hall_states, phi_LUT_deg, ...
                   'VariableNames', {'HallState','phi_deg'})
 disp('----------------------------------------------');
 
-%% 8. Export as workspace variable and Simulink.Parameter
-
-phi_corr_LUT = phi_LUT_rad;   % Nx1, radians – main output you'll use
-
+%% 7. Export and Save
+phi_corr_LUT = phi_LUT_rad; 
 phi_corr_LUT_param = Simulink.Parameter(phi_corr_LUT);
 phi_corr_LUT_param.CoderInfo.StorageClass = 'ExportedGlobal';
 
-disp('Created phi_corr_LUT (rad) and phi_corr_LUT_param (Simulink.Parameter).');
+save('Hall_LUT_Config.mat', 'phi_corr_LUT_param');
+fprintf('Saved to Hall_LUT_Config.mat\n');
