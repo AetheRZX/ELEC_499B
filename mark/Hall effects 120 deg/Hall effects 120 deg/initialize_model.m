@@ -49,3 +49,15 @@ MTPA_master_gain = 3;
 
 omega_min = 50;
 % define target values
+
+% LUT initialize
+% 1) Make sure phi_corr_LUT_param always exists
+if ~evalin('base','exist(''phi_corr_LUT_param'',''var'')')
+    phi_corr_LUT = zeros(6,1);              % dummy LUT, radians
+    phi_corr_LUT_param = Simulink.Parameter(phi_corr_LUT);
+    phi_corr_LUT_param.CoderInfo.StorageClass = 'ExportedGlobal';
+    assignin('base','phi_corr_LUT_param',phi_corr_LUT_param);
+end
+
+% 2) Default to using the filter, not the LUT
+assignin('base','use_LUT',0);               % 0 = filter, 1 = LUT
