@@ -1,0 +1,162 @@
+\documentclass[conference]{IEEEtran}
+
+\IEEEoverridecommandlockouts
+
+\usepackage{cite}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{algorithmic}
+\usepackage{graphicx}
+\usepackage{textcomp}
+\usepackage{xcolor}
+\usepackage{subfig}
+\usepackage{siunitx}
+
+\def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
+    T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
+
+\usepackage{eso-pic}
+\newcommand\AtPageUpperCenter[1]{\AtPageUpperLeft{%
+ \put(\LenToUnit{\dimexpr0.5\paperwidth-0.5\textwidth\relax},\LenToUnit{-1cm}){%
+     \parbox{\textwidth}{\centering\fontsize{9}{11}\selectfont #1}}%
+}}
+
+\newcommand{\conf}[1]{%
+\AddToShipoutPictureBG*{%
+\AtPageUpperCenter{#1}%
+}%
+}
+
+\conf{25th International Symposium INFOTEH-JAHORINA, 18-20 March 2026}
+
+\begin{document}
+
+\title{Lookup-Table Hall Calibration with MTPA Advance-Angle Control for BLDC Drives}
+
+\author{\IEEEauthorblockN{Mark Phung\IEEEauthorrefmark{1}, Matthew Hasman\IEEEauthorrefmark{2}}
+\IEEEauthorblockA{\IEEEauthorrefmark{1}Department of Engineering Physics, University of British Columbia, Vancouver, Canada\\
+Email: mark.phung@example.com}
+\IEEEauthorblockA{\IEEEauthorrefmark{2}Department of Electrical and Computer Engineering, University of British Columbia, Vancouver, Canada\\
+Email: matthew.hasman@example.com}
+}
+
+\maketitle
+
+\begin{abstract}
+Brushless DC (BLDC) drives with misaligned Hall sensors and large stator inductance lose torque-per-ampere (TPA) and suffer torque ripple. We combine a lookup-table (LUT) Hall-sensor calibration with a maximum-torque-per-ampere (MTPA) PI controller that compensates the commutation advance angle. A short calibration stage records conduction-interval corrections into a LUT. During operation, LUT-based timing restores balanced Hall transitions without filter delay, while a PI loop drives the averaged d-axis current to zero, realigning current and back-EMF even under inductive lag. Simulations and experiments on an industrial BLDC show higher TPA and improved transient response compared with averaging-filter-only and uncompensated baselines.
+\end{abstract}
+
+\begin{IEEEkeywords}
+BLDC, Hall sensors, lookup table, MTPA, advance angle, torque-per-ampere.
+\end{IEEEkeywords}
+
+\section{Introduction}
+Low-cost BLDC drives often exhibit Hall-sensor misalignment, causing uneven 120$^\circ$ conduction intervals, torque ripple, and rotor-angle estimation errors. Large stator inductance further delays phase currents, breaking the maximum-torque-per-ampere (MTPA) alignment achieved with a fixed 30$^\circ$ advance. Prior work demonstrated (i) an averaging-filter approach paired with a PI controller that adjusts the advance angle to force the averaged d-axis current to zero, and (ii) a calibration routine that learns Hall timing corrections and replays them from a lookup table (LUT) to avoid filter delay. We merge these ideas: LUT-based timing correction removes the Hall-induced imbalance, and an MTPA PI loop restores current/EMF alignment in real time.
+
+\section{Drive Model}
+We assume a round-rotor PMSM with sinusoidal back-EMF operated in six-step 120$^\circ$ commutation. The Park transform is
+\begin{equation}
+    \begin{bmatrix} f_q \\ f_d \end{bmatrix} = \mathbf{K}_r \begin{bmatrix} f_a \\ f_b \\ f_c \end{bmatrix}, \quad
+    \mathbf{K}_r =
+    \begin{bmatrix}
+    \cos\theta_r & \cos(\theta_r - \tfrac{2\pi}{3}) & \cos(\theta_r + \tfrac{2\pi}{3})\\
+    \tfrac{2}{3}\sin\theta_r & \tfrac{2}{3}\sin(\theta_r - \tfrac{2\pi}{3}) & \tfrac{2}{3}\sin(\theta_r + \tfrac{2\pi}{3})
+    \end{bmatrix}.
+\end{equation}
+With stator resistance $R_s$, inductance $L_s$, magnet flux $\psi_m$, and electrical speed $\omega_r$, the qd-frame voltage equations are
+\begin{align}
+    v_q &= R_s i_q + L_s \tfrac{di_q}{dt} + \omega_r L_s i_d + \omega_r \psi_m, \label{eq:vq}\\
+    v_d &= R_s i_d + L_s \tfrac{di_d}{dt} - \omega_r L_s i_q. \label{eq:vd}
+\end{align}
+Electromagnetic torque for $P$ poles is
+\begin{equation}
+    T_e = \tfrac{3P}{4}\,\psi_m\, i_q. \label{eq:torque}
+\end{equation}
+For a round rotor, $i_d$ does not produce torque, so MTPA targets $\bar{i}_d = 0$ (average over a conduction interval) even under six-step commutation and current ripple.
+
+\section{LUT Hall-Sensor Calibration}
+Let $t_{\text{int}}[n]$ denote the time of the $n$-th hardware Hall transition and $\Delta t[n]$ the measured conduction interval. The next software-scheduled transition is
+\begin{equation}
+    t_{\text{out}}[n+1] = t_{\text{int}}[n] + \Delta t_{\text{corr}}[n]. \label{eq:tout}
+\end{equation}
+During calibration at steady speed $\omega_o$, an averaging filter generates $\Delta t_{\text{corr}}[n]$. Examples include the 3-step and 6-step filters:
+\begin{align}
+    \Delta t_{\text{corr}}[n] &= \tfrac{1}{3}\big(2\Delta t[n-1] + \Delta t[n-2] - \Delta t[n-3]\big), \label{eq:filter3}\\
+    \Delta t_{\text{corr}}[n] &= \tfrac{1}{6}\big(\Delta t[n-1] + 3\Delta t[n-2] + 4\Delta t[n-3] \nonumber\\
+    &\quad - \Delta t[n-4] - \Delta t[n-5]\big). \label{eq:filter6}
+\end{align}
+Quadratic extrapolation can reduce transient lag by projecting the balanced interval forward when speed changes between samples. The filter runs briefly and is then replaced by the LUT.
+Convert the time correction to an angle at calibration speed:
+\begin{equation}
+    \delta\theta_{\text{corr}} = \omega_o\, \Delta t_{\text{corr}}. \label{eq:angle}
+\end{equation}
+Store $\delta\theta_{\text{corr}}$ for each Hall state in a six-entry LUT: $\text{LUT}[s] = \delta\theta_{\text{corr},s}$. In runtime, eliminate filter memory by replaying the learned angle:
+\begin{align}
+    \Delta t_{\text{corr,LUT}} &= \frac{\delta\theta_{\text{corr}}}{\hat{\omega}_r}, \label{eq:lut_time}\\
+    t_{\text{out}}[n+1] &= t_{\text{int}}[n] + \Delta t_{\text{corr,LUT}}. \label{eq:tout_lut}
+\end{align}
+Because \eqref{eq:lut_time} needs only the current speed estimate $\hat{\omega}_r$, it can be applied after a single conduction interval, avoiding the latency of a running filter.
+
+\section{MTPA PI Advance-Angle Control}
+Using LUT-balanced Hall transitions, the rotor angle $\hat{\theta}_r$ is linearly interpolated between transitions. The d-axis current and its average over a switching interval $T_{\text{sw}}$ are
+\begin{align}
+    i_d &= \tfrac{2}{3}\big(i_a \sin\hat{\theta}_r + i_b \sin(\hat{\theta}_r - \tfrac{2\pi}{3}) + i_c \sin(\hat{\theta}_r + \tfrac{2\pi}{3})\big), \label{eq:id}\\
+    \bar{i}_d &= \frac{1}{T_{\text{sw}}}\int_{t}^{t+T_{\text{sw}}} i_d(\tau)\, d\tau. \label{eq:id_avg}
+\end{align}
+The advance angle $v$ is adjusted by a PI loop to enforce $\bar{i}_d \rightarrow 0$:
+\begin{equation}
+    v[k] = v[k-1] + K_p\big(0 - \bar{i}_d[k]\big) + K_i \sum_{j=0}^{k} \big(0 - \bar{i}_d[j]\big). \label{eq:pi}
+\end{equation}
+The effective commutation angle becomes $30^\circ + v$, aligning the fundamental phase current with the back-EMF despite inductive lag and residual Hall errors.
+
+\paragraph{Controller tuning} Choose $K_p, K_i$ so the closed-loop bandwidth exceeds the electrical fundamental, smoothing interval-to-interval ripple in $\bar{i}_d$, yet stays below PWM noise. Apply anti-windup when $v$ saturates (e.g., $\pm 20^\circ$ practical range).
+
+\section{Implementation Details}
+\subsection{Firmware Tasks}
+Two ISRs suffice: (i) a hardware Hall ISR that captures $t_{\text{int}}[n]$ and queues $t_{\text{out}}[n+1]$ from \eqref{eq:tout_lut}, and (ii) a timer-based software ISR that advances the filtered Hall state at $t_{\text{out}}[n+1]$. A PWM-rate task computes $\bar{i}_d$, updates $v$ via \eqref{eq:pi}, and applies $30^\circ+v$ to commutation.
+
+\subsection{Calibration Routine}
+\begin{enumerate}
+    \item Spin to a steady speed $\omega_o$ using raw Hall signals.
+    \item Enable the averaging filter (e.g., 6-step with quadratic extrapolation) for a short window; log $\Delta t_{\text{corr}}$ by Hall state.
+    \item Convert to $\delta\theta_{\text{corr}}$ via \eqref{eq:angle}, populate $\text{LUT}[s]$, disable the filter, switch to LUT-only timing.
+    \item Optionally repeat at a second operating point to confirm LUT invariance.
+\end{enumerate}
+
+\subsection{Speed Estimation}
+Compute $\hat{\omega}_r$ from recent conduction intervals (sliding average) or differentiated filtered Hall angle. Light low-pass filtering prevents jitter in \eqref{eq:lut_time}.
+
+\section{Combined Algorithm}
+\begin{enumerate}
+    \item \textbf{Calibration:} run the averaging filter, compute $\delta\theta_{\text{corr}}$ via \eqref{eq:angle}, populate $\text{LUT}[s]$ for the six Hall states.
+    \item \textbf{Runtime:} use \eqref{eq:lut_time}--\eqref{eq:tout_lut} to schedule software Hall transitions; interpolate $\hat{\theta}_r$; compute $\bar{i}_d$; update $v$ via \eqref{eq:pi}; apply $30^\circ + v$ in the commutation logic.
+    \item \textbf{Optional refresh:} briefly enable the filter if speed/load deviates materially, update $\text{LUT}[s]$.
+\end{enumerate}
+This pairing balances conduction intervals without delay and restores MTPA in real time.
+
+\section{Performance Metrics and Figures}
+Use simulation/experimental data to populate the following figures and quantities:
+\begin{itemize}
+    \item \textbf{Block diagram}: Hall signals $\rightarrow$ LUT timing $\rightarrow \hat{\theta}_r \rightarrow \bar{i}_d$ PI $\rightarrow v$.
+    \item \textbf{Waveform alignment}: fundamental $i_a$ vs $e_a$ before/after; report phase shift $\phi$ and current THD.
+    \item \textbf{Torque-per-ampere}: $\tfrac{T_e}{|i|_{\text{rms}}}$ for (i) uncompensated, (ii) LUT-only, (iii) MTPA-only, (iv) combined; annotate \% gain of combined vs baseline.
+    \item \textbf{Torque ripple}: peak-to-peak and RMS ripple as \% of $T_e$ for the same four cases.
+    \item \textbf{Compensation angle vs speed}: $v_{\text{tot}}(\omega_r)$ (LUT + PI) from 500--2500~rpm; highlight any $\pm 12^\circ$ region near 1000~rpm.
+    \item \textbf{Efficiency vs load}: electrical-to-mechanical efficiency across several loads with and without the combined method.
+    \item \textbf{Transients}: DC bus step (e.g., \SI{20}{V} to \SI{35}{V}) showing speed and $T_e$ overshoot/settling; startup with LUT enabled after first conduction interval; load-step response with settling time and overshoot.
+\end{itemize}
+Insert figures with \verb|\includegraphics| once generated; captions should emphasize torque ripple reduction and TPA gains.
+
+\section{Conclusion}
+An LUT-based Hall calibration removes the delay and imbalance introduced by misaligned sensors, while an MTPA PI loop restores current/EMF alignment under inductive lag. The combined method improves torque-per-ampere and transient behavior versus averaging-filter-only and uncompensated baselines, and is lightweight enough for microcontroller implementation. Future work includes adaptive LUT refresh under speed/load changes and extension to salient-pole machines.
+
+\section*{Acknowledgment}
+This work builds on prior implementations of Hall-sensor filtering and MTPA advance-angle control in industrial BLDC drives.
+
+\begin{thebibliography}{00}
+\bibitem{phung} M. Phung, ``Maximum Torque per Ampere Control of Brushless DC Motors with Large Winding Time Constant and Hall-Sensor Misalignment,'' BASc Thesis, UBC, 2025.
+\bibitem{hasman} M. Hasman, ``Mitigating Misaligned Hall Sensors in BLDC Motors Using a Calibration Routine for Improved Fast Electromechanical Transients,'' BASc Thesis, UBC, 2025.
+\bibitem{krause} P. C. Krause \emph{et al.}, \emph{Electromechanical Motion Devices}, 2nd ed. Wiley, 2019.
+\bibitem{simscape} MathWorks, ``Simscape Electrical Documentation,'' R2024b.
+\end{thebibliography}
+
+\end{document}
