@@ -1,31 +1,107 @@
 \relax 
+\citation{b1,b2,b3,b4}
+\citation{b1,b2,b3,b4}
+\citation{b5}
+\citation{b5}
+\citation{b7}
+\citation{b8}
+\citation{b8}
+\citation{b6,b7,b8,b9}
+\citation{b9,b10}
+\citation{b7,b11,b12}
 \@writefile{toc}{\contentsline {section}{\numberline {I}Introduction}{1}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {II}Drive Model}{1}{}\protected@file@percent }
-\newlabel{eq:vq}{{2}{1}{}{}{}}
-\newlabel{eq:vd}{{3}{1}{}{}{}}
-\newlabel{eq:torque}{{4}{1}{}{}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {III}LUT Hall-Sensor Calibration}{1}{}\protected@file@percent }
-\newlabel{eq:tout}{{5}{1}{}{}{}}
-\newlabel{eq:filter3}{{6}{1}{}{}{}}
-\newlabel{eq:filter6}{{7}{1}{}{}{}}
-\newlabel{eq:angle}{{8}{1}{}{}{}}
-\newlabel{eq:lut_time}{{9}{1}{}{}{}}
-\newlabel{eq:tout_lut}{{10}{1}{}{}{}}
-\bibcite{phung}{1}
-\bibcite{hasman}{2}
-\bibcite{krause}{3}
-\bibcite{simscape}{4}
-\@writefile{toc}{\contentsline {section}{\numberline {IV}MTPA PI Advance-Angle Control}{2}{}\protected@file@percent }
-\newlabel{eq:id}{{11}{2}{}{}{}}
-\newlabel{eq:id_avg}{{12}{2}{}{}{}}
-\newlabel{eq:pi}{{13}{2}{}{}{}}
-\@writefile{toc}{\contentsline {paragraph}{\numberline {\mbox  {IV-}0a}Controller tuning}{2}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {V}Implementation Details}{2}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {V-A}}Firmware Tasks}{2}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {V-B}}Calibration Routine}{2}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {V-C}}Speed Estimation}{2}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {VI}Combined Algorithm}{2}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {VII}Performance Metrics and Figures}{2}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {VIII}Conclusion}{2}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{References}{2}{}\protected@file@percent }
-\gdef \@abspage@last{2}
+\newlabel{sec:introduction}{{I}{1}{}{section.1}{}}
+\newlabel{sec:introduction@cref}{{[section][1][]I}{[1][1][]1}{}{}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {I-A}}Background}{1}{}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces Diagram for a Hall-sensor controlled BLDC motor driven by a VSI. The misaligned Hall sensors are passed through the proposed algorithm.}}{1}{}\protected@file@percent }
+\providecommand*\caption@xref[2]{\@setref\relax\@undefined{#1}}
+\newlabel{fig:vsi_background}{{1}{1}{}{figure.1}{}}
+\newlabel{fig:vsi_background@cref}{{[figure][1][]1}{[1][1][]1}{}{}{}}
+\citation{b7}
+\citation{b7}
+\citation{b9}
+\@writefile{toc}{\contentsline {section}{\numberline {II}Modeling of the BLDC Motor Drive System}{2}{}\protected@file@percent }
+\newlabel{sec:modeling}{{II}{2}{}{section.2}{}}
+\newlabel{sec:modeling@cref}{{[section][2][]II}{[1][2][]2}{}{}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {II-A}}Mathematical Model of the PMSM}{2}{}\protected@file@percent }
+\newlabel{eq:voltage}{{1}{2}{}{equation.1}{}}
+\newlabel{eq:voltage@cref}{{[equation][1][]1}{[1][2][]2}{}{}{}}
+\newlabel{eq:torque_general}{{2}{2}{}{equation.2}{}}
+\newlabel{eq:torque_general@cref}{{[equation][2][]2}{[1][2][]2}{}{}{}}
+\newlabel{eq:park}{{3}{2}{}{equation.3}{}}
+\newlabel{eq:park@cref}{{[equation][3][]3}{[1][2][]2}{}{}{}}
+\newlabel{eq:vq}{{4}{2}{}{equation.4}{}}
+\newlabel{eq:vq@cref}{{[equation][4][]4}{[1][2][]2}{}{}{}}
+\newlabel{eq:vd}{{5}{2}{}{equation.5}{}}
+\newlabel{eq:vd@cref}{{[equation][5][]5}{[1][2][]2}{}{}{}}
+\newlabel{eq:torque}{{6}{2}{}{equation.6}{}}
+\newlabel{eq:torque@cref}{{[equation][6][]6}{[1][2][]2}{}{}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {II-B}}Approximating MTPA in the 120$^\circ $ Commutation Logic}{2}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {II-C}}Impact of Hall Sensors Misalignment}{2}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {III}Hall Sensor Signals Filter via Extrapolated Averaging}{2}{}\protected@file@percent }
+\newlabel{sec:hall_filter}{{III}{2}{}{section.3}{}}
+\newlabel{sec:hall_filter@cref}{{[section][3][]III}{[1][2][]2}{}{}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {III-A}}Evaluation of Existing Averaging Filters}{2}{}\protected@file@percent }
+\newlabel{eq:tau_a3}{{7}{2}{}{equation.7}{}}
+\newlabel{eq:tau_a3@cref}{{[equation][7][]7}{[1][2][]2}{}{}{}}
+\newlabel{eq:tau_a6}{{8}{2}{}{equation.8}{}}
+\newlabel{eq:tau_a6@cref}{{[equation][8][]8}{[1][2][]2}{}{}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces Visualization of Hall sensor misalignment on the stator and the resulting distortion in switching intervals.}}{3}{}\protected@file@percent }
+\newlabel{fig:misalignment}{{2}{3}{}{figure.2}{}}
+\newlabel{fig:misalignment@cref}{{[figure][2][]2}{[1][2][]3}{}{}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {III-B}}Proposed LUT-Based Calibration Strategy}{3}{}\protected@file@percent }
+\newlabel{eq:moving_avg}{{9}{3}{}{equation.9}{}}
+\newlabel{eq:moving_avg@cref}{{[equation][9][]9}{[1][3][]3}{}{}{}}
+\newlabel{eq:tau_ideal}{{10}{3}{}{equation.10}{}}
+\newlabel{eq:tau_ideal@cref}{{[equation][10][]10}{[1][3][]3}{}{}{}}
+\newlabel{eq:time_error}{{11}{3}{}{equation.11}{}}
+\newlabel{eq:time_error@cref}{{[equation][11][]11}{[1][3][]3}{}{}{}}
+\newlabel{eq:lut_angle}{{12}{3}{}{equation.12}{}}
+\newlabel{eq:lut_angle@cref}{{[equation][12][]12}{[1][3][]3}{}{}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {III-C}}Runtime Correction}{3}{}\protected@file@percent }
+\newlabel{eq:tau_lut}{{13}{3}{}{equation.13}{}}
+\newlabel{eq:tau_lut@cref}{{[equation][13][]13}{[1][3][]3}{}{}{}}
+\newlabel{eq:t_out}{{14}{3}{}{equation.14}{}}
+\newlabel{eq:t_out@cref}{{[equation][14][]14}{[1][3][]3}{}{}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {IV}MTPA PI Controller via Advance Angle Compensation}{3}{}\protected@file@percent }
+\newlabel{sec:mtpa_control}{{IV}{3}{}{section.4}{}}
+\newlabel{sec:mtpa_control@cref}{{[section][4][]IV}{[1][3][]3}{}{}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {IV-A}}Control Strategy}{3}{}\protected@file@percent }
+\newlabel{eq:pi_ctrl}{{15}{3}{}{equation.15}{}}
+\newlabel{eq:pi_ctrl@cref}{{[equation][15][]15}{[1][3][]3}{}{}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Flowchart of the proposed MTPA PI controller method, showing the feedback mechanism for advance angle adjustment.}}{4}{}\protected@file@percent }
+\newlabel{fig:mtpa_flowchart}{{3}{4}{}{figure.3}{}}
+\newlabel{fig:mtpa_flowchart@cref}{{[figure][3][]3}{[1][3][]4}{}{}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {V}Detailed Machine Simulations}{4}{}\protected@file@percent }
+\newlabel{sec:simulation}{{V}{4}{}{section.5}{}}
+\newlabel{sec:simulation@cref}{{[section][5][]V}{[1][3][]4}{}{}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {V-A}}Steady-State Performance}{4}{}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces Alignment of the fundamental phase current and back-EMF: (a) uncompensated; (b) filter only; (c) combined filter + MTPA controller.}}{4}{}\protected@file@percent }
+\newlabel{fig:alignment}{{4}{4}{}{figure.4}{}}
+\newlabel{fig:alignment@cref}{{[figure][4][]4}{[1][4][]4}{}{}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces Simulated steady-state results: (top) Phase current comparison; (middle) Torque ripple comparison; (bottom) Compensated firing angle vs. speed.}}{4}{}\protected@file@percent }
+\newlabel{fig:results_torque}{{5}{4}{}{figure.5}{}}
+\newlabel{fig:results_torque@cref}{{[figure][5][]5}{[1][4][]4}{}{}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {V-B}}Transient Performance}{4}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {VI}Conclusion}{4}{}\protected@file@percent }
+\newlabel{sec:conclusion}{{VI}{4}{}{section.6}{}}
+\newlabel{sec:conclusion@cref}{{[section][6][]VI}{[1][4][]4}{}{}{}}
+\bibcite{b1}{1}
+\bibcite{b2}{2}
+\bibcite{b3}{3}
+\bibcite{b4}{4}
+\bibcite{b5new}{5}
+\bibcite{b5}{6}
+\bibcite{b6}{7}
+\@writefile{lof}{\contentsline {figure}{\numberline {6}{\ignorespaces Simulated speed response step increase. (a) with ideal Hall sensor placement; (b) Comparison of averaging filters vs. proposed LUT correction. The LUT method achieves faster convergence.}}{5}{}\protected@file@percent }
+\newlabel{fig:speed_step}{{6}{5}{}{figure.6}{}}
+\newlabel{fig:speed_step@cref}{{[figure][6][]6}{[1][4][]5}{}{}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {7}{\ignorespaces Simulated response to a load step increase: (a) speed response; (b) electromagnetic torque response. The proposed LUT correction (yellow trace) shows superior dynamic tracking.}}{5}{}\protected@file@percent }
+\newlabel{fig:load_step}{{7}{5}{}{figure.7}{}}
+\newlabel{fig:load_step@cref}{{[figure][7][]7}{[1][4][]5}{}{}{}}
+\@writefile{toc}{\contentsline {section}{Appendix: Motor Parameters}{5}{}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {I}{\ignorespaces Motor Parameters}}{5}{}\protected@file@percent }
+\newlabel{tab:motor_params}{{I}{5}{}{table.1}{}}
+\newlabel{tab:motor_params@cref}{{[table][1][]I}{[1][5][]5}{}{}{}}
+\@writefile{toc}{\contentsline {section}{References}{5}{}\protected@file@percent }
+\gdef \@abspage@last{5}
