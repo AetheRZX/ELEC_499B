@@ -16,9 +16,16 @@ T_SIM_MTPA = 0.55
 T_START_OFFSET = 0.48
 
 # Plot Ranges (ms)
-T_DETAIL_XMIN = -10 # Padding for Uncompensated
+T_DETAIL_XMIN = -5  # Shifted left
 T_DETAIL_MAX_MS = 140
+
+# Calculate Right Plot Start for Matching Scale
 T_DECAY_MAX_MS = 400
+WIDTH_RATIO_L = 2
+WIDTH_RATIO_R = 1
+left_span = T_DETAIL_MAX_MS - T_DETAIL_XMIN
+right_span = left_span * (WIDTH_RATIO_R / WIDTH_RATIO_L)
+T_DECAY_START = T_DECAY_MAX_MS - right_span
 
 time_scale = 1000.0
 
@@ -43,7 +50,6 @@ def load_data(fpath):
     return t[:L], ia[:L], ids, ids_avg[:L]
 
 def calculate_tau(t_ms, y):
-    # Fit decay from peak (approx 75ms) to end
     start_ms = 80 
     end_ms = 350
     mask = (t_ms >= start_ms) & (t_ms <= end_ms) & (y > 0.1)
@@ -79,16 +85,17 @@ def plot_row(ax_detail, ax_decay, t, i_a, i_ds, i_ds_avg, title_labels, letter):
     ax_detail.axvline(t_mtpa, color='k', linestyle='-.', lw=1.5)
     
     ax_detail.set_xlim(T_DETAIL_XMIN, T_DETAIL_MAX_MS)
-    ax_detail.set_ylim(-22, 24) # Increased padding
+    ax_detail.set_ylim(-22, 24) 
     
     # Labels
-    y_txt = 21 # Moved up
-    # Adjust center points for labels considering -10 start? No, labels are at specific times.
-    ax_detail.text(t_filter/2, y_txt, title_labels[0], ha='center', fontsize=10, fontweight='bold')
+    y_txt = 21 
+    # --- MODIFICATION: Center 'Uncompensated' between visible Start (-5) and Filter (20) ---
+    ax_detail.text((T_DETAIL_XMIN + t_filter)/2, y_txt, title_labels[0], ha='center', fontsize=10, fontweight='bold')
+    
     ax_detail.text((t_filter+t_mtpa)/2, y_txt, title_labels[1], ha='center', fontsize=10, fontweight='bold')
     ax_detail.text((t_mtpa+T_DETAIL_MAX_MS)/2, y_txt, title_labels[2], ha='center', fontsize=10, fontweight='bold')
     
-    ax_detail.text(-0.1, 1.05, letter, transform=ax_detail.transAxes, fontsize=14, fontweight='bold')
+    ax_detail.text(-0.08, 1.05, letter, transform=ax_detail.transAxes, fontsize=14, fontweight='bold')
     ax_detail.set_ylabel('Current (A)', fontsize=12)
     ax_detail.grid(True, linestyle=':', alpha=0.5)
     
@@ -104,8 +111,8 @@ def plot_row(ax_detail, ax_decay, t, i_a, i_ds, i_ds_avg, title_labels, letter):
     ax_decay.plot(t_ms, i_ds, color=c_ids, linewidth=1.2)
     ax_decay.plot(t_ms, i_ds_avg, color='k', linewidth=2.0)
     
-    ax_decay.set_xlim(0, T_DECAY_MAX_MS)
-    ax_decay.set_ylim(-22, 24) # Match Left
+    ax_decay.set_xlim(T_DECAY_START, T_DECAY_MAX_MS)
+    ax_decay.set_ylim(-22, 24)
     
     # Break Marks (Left spine)
     kwargs.update(transform=ax_decay.transAxes) 
@@ -125,22 +132,23 @@ def plot_all():
     
     # --- Figure 1: Split Panels ---
     fig, axes = plt.subplots(2, 2, figsize=(14, 6), constrained_layout=True, 
-                             gridspec_kw={'width_ratios': [2, 1]})
+                             gridspec_kw={'width_ratios': [WIDTH_RATIO_L, WIDTH_RATIO_R]})
     
     plot_row(axes[0,0], axes[0,1], *d0, ["Uncompensated", "Filter Only", "Filter + MTPA"], '(a)')
     plot_row(axes[1,0], axes[1,1], *d1, ["Uncompensated", "LUT Only", "LUT + MTPA"], '(b)')
     
-    axes[1,0].set_xlabel('Time (ms)', fontsize=12)
-    axes[1,1].set_xlabel('Time (ms)', fontsize=12)
+    # --- FIX: Use supxlabel to prevent overlap ---
+    fig.supxlabel('Time (ms)', fontsize=12)
     
-    handles, labels = axes[1,0].get_legend_handles_labels()
-    fig.legend(handles, labels, loc='lower center', ncol=3, bbox_to_anchor=(0.5, -0.05))
+    handles, labels = axes[0,0].get_legend_handles_labels()
+    fig.legend(handles, labels, loc='upper center', ncol=3, 
+               bbox_to_anchor=(0.5, 1.03), frameon=False, fontsize=11)
     
     out = os.path.join(OUTPUT_DIR, 'current_transient_stacked_inset.png')
     plt.savefig(out, dpi=300, bbox_inches='tight')
     print(f"Saved {out}")
     
-    # --- Figure 2: Compare Plot ---
+    # --- Figure 2: Compare Plot (Unchanged) ---
     t0, _, _, avg0 = d0
     _, _, _, avg1 = d1 
     L = min(len(avg0), len(avg1))
