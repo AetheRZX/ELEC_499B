@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.27 (MiKTeX 25.4) (preloaded format=pdflatex 2025.12.5)  8 DEC 2025 03:10
+This is pdfTeX, Version 3.141592653-2.6-1.40.27 (MiKTeX 25.4) (preloaded format=pdflatex 2025.12.5)  11 DEC 2025 05:28
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -381,52 +381,355 @@ Package: cleveref 2018/03/27 v0.21.4 Intelligent cross-referencing
 Package cleveref Info: `subfig' support loaded on input line 3164.
 )
 ==> First Aid for cleveref.sty applied!
+
+(C:\Users\gyang\AppData\Local\Programs\MiKTeX\tex/latex/pgf/frontendlayer\tikz.
+sty
+(C:\Users\gyang\AppData\Local\Programs\MiKTeX\tex/latex/pgf/basiclayer\pgf.sty
+(C:\Users\gyang\AppData\Local\Programs\MiKTeX\tex/latex/pgf/utilities\pgfrcs.st
+y
+(C:\Users\gyang\AppData\Local\Programs\MiKTeX\tex/generic/pgf/utilities\pgfutil
+-common.tex
+\pgfutil@everybye=\toks25
+\pgfutil@tempdima=\dimen199
+\pgfutil@tempdimb=\dimen256
+)
+(C:\Users\gyang\AppData\Local\Programs\MiKTeX\tex/generic/pgf/utilities\pgfutil
+-latex.def
+\pgfutil@abb=\box67
+)
+(C:\Users\gyang\AppData\Local\Programs\MiKTeX\tex/generic/pgf/utilities\pgfrcs.
+code.tex
+(C:\Users\gyang\AppData\Local\Programs\MiKTeX\tex/generic/pgf\pgf.revision.tex)
+Package: pgfrcs 2025-08-29 v3.1.11a (3.1.11a)
+))
+Package: pgf 2025-08-29 v3.1.11a (3.1.11a)
+
+(C:\Users\gyang\AppData\Local\Programs\MiKTeX\tex/latex/pgf/basiclayer\pgfcore.
+sty
+(C:\Users\gyang\AppData\Local\Programs\MiKTeX\tex/latex/pgf/systemlayer\pgfsys.
+sty
+(C:\Users\gyang\AppData\Local\Programs\MiKTeX\tex/generic/pgf/systemlayer\pgfsy
+s.code.tex
+Package: pgfsys 2025-08-29 v3.1.11a (3.1.11a)
+
+(C:\Users\gyang\AppData\Local\Programs\MiKTeX\tex/generic/pgf/utilities\pgfkeys
+.code.tex
+\pgfkeys@pathtoks=\toks26
+\pgfkeys@temptoks=\toks27
+
+(C:\Users\gyang\AppData\Local\Programs\MiKTeX\tex/generic/pgf/utilities\pgfkeys
+libraryfiltered.code.tex
+\pgfkeys@tmptoks=\toks28
+))
+\pgf@x=\dimen257
+\pgf@y=\dimen258
+\pgf@xa=\dimen259
+\pgf@ya=\dimen260
+\pgf@xb=\dimen261
+\pgf@yb=\dimen262
+\pgf@xc=\dimen263
+\pgf@yc=\dimen264
+\pgf@xd=\dimen265
+\pgf@yd=\dimen266
+\w@pgf@writea=\write3
+\r@pgf@reada=\read2
+\c@pgf@counta=\count330
+\c@pgf@countb=\count331
+\c@pgf@countc=\count332
+\c@pgf@countd=\count333
+\t@pgf@toka=\toks29
+\t@pgf@tokb=\toks30
+\t@pgf@tokc=\toks31
+\pgf@sys@id@count=\count334
+
+(C:\Users\gyang\AppData\Local\Programs\MiKTeX\tex/generic/pgf/systemlayer\pgf.c
+fg
+File: pgf.cfg 2025-08-29 v3.1.11a (3.1.11a)
+)
+Driver file for pgf: pgfsys-pdftex.def
+
+(C:\Users\gyang\AppData\Local\Programs\MiKTeX\tex/generic/pgf/systemlayer\pgfsy
+s-pdftex.def
+File: pgfsys-pdftex.def 2025-08-29 v3.1.11a (3.1.11a)
+
+(C:\Users\gyang\AppData\Local\Programs\MiKTeX\tex/generic/pgf/systemlayer\pgfsy
+s-common-pdf.def
+File: pgfsys-common-pdf.def 2025-08-29 v3.1.11a (3.1.11a)
+)))
+(C:\Users\gyang\AppData\Local\Programs\MiKTeX\tex/generic/pgf/systemlayer\pgfsy
+ssoftpath.code.tex
+File: pgfsyssoftpath.code.tex 2025-08-29 v3.1.11a (3.1.11a)
+\pgfsyssoftpath@smallbuffer@items=\count335
+\pgfsyssoftpath@bigbuffer@items=\count336
+)
+(C:\Users\gyang\AppData\Local\Programs\MiKTeX\tex/generic/pgf/systemlayer\pgfsy
+sprotocol.code.tex
+File: pgfsysprotocol.code.tex 2025-08-29 v3.1.11a (3.1.11a)
+))
+(C:\Users\gyang\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcor
+e.code.tex
+Package: pgfcore 2025-08-29 v3.1.11a (3.1.11a)
+
+(C:\Users\gyang\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmath.code
+.tex
+(C:\Users\gyang\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmathutil.
+code.tex)
+(C:\Users\gyang\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmathparse
+r.code.tex
+\pgfmath@dimen=\dimen267
+\pgfmath@count=\count337
+\pgfmath@box=\box68
+\pgfmath@toks=\toks32
+\pgfmath@stack@operand=\toks33
+\pgfmath@stack@operation=\toks34
+)
+(C:\Users\gyang\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmathfunct
+ions.code.tex)
+(C:\Users\gyang\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmathfunct
+ions.basic.code.tex)
+(C:\Users\gyang\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmathfunct
+ions.trigonometric.code.tex)
+(C:\Users\gyang\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmathfunct
+ions.random.code.tex)
+(C:\Users\gyang\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmathfunct
+ions.comparison.code.tex)
+(C:\Users\gyang\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmathfunct
+ions.base.code.tex)
+(C:\Users\gyang\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmathfunct
+ions.round.code.tex)
+(C:\Users\gyang\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmathfunct
+ions.misc.code.tex)
+(C:\Users\gyang\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmathfunct
+ions.integerarithmetics.code.tex)
+(C:\Users\gyang\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmathcalc.
+code.tex)
+(C:\Users\gyang\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmathfloat
+.code.tex
+\c@pgfmathroundto@lastzeros=\count338
+))
+(C:\Users\gyang\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfint.code.
+tex)
+(C:\Users\gyang\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcor
+epoints.code.tex
+File: pgfcorepoints.code.tex 2025-08-29 v3.1.11a (3.1.11a)
+\pgf@picminx=\dimen268
+\pgf@picmaxx=\dimen269
+\pgf@picminy=\dimen270
+\pgf@picmaxy=\dimen271
+\pgf@pathminx=\dimen272
+\pgf@pathmaxx=\dimen273
+\pgf@pathminy=\dimen274
+\pgf@pathmaxy=\dimen275
+\pgf@xx=\dimen276
+\pgf@xy=\dimen277
+\pgf@yx=\dimen278
+\pgf@yy=\dimen279
+\pgf@zx=\dimen280
+\pgf@zy=\dimen281
+)
+(C:\Users\gyang\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcor
+epathconstruct.code.tex
+File: pgfcorepathconstruct.code.tex 2025-08-29 v3.1.11a (3.1.11a)
+\pgf@path@lastx=\dimen282
+\pgf@path@lasty=\dimen283
+)
+(C:\Users\gyang\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcor
+epathusage.code.tex
+File: pgfcorepathusage.code.tex 2025-08-29 v3.1.11a (3.1.11a)
+\pgf@shorten@end@additional=\dimen284
+\pgf@shorten@start@additional=\dimen285
+)
+(C:\Users\gyang\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcor
+escopes.code.tex
+File: pgfcorescopes.code.tex 2025-08-29 v3.1.11a (3.1.11a)
+\pgfpic=\box69
+\pgf@hbox=\box70
+\pgf@layerbox@main=\box71
+\pgf@picture@serial@count=\count339
+)
+(C:\Users\gyang\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcor
+egraphicstate.code.tex
+File: pgfcoregraphicstate.code.tex 2025-08-29 v3.1.11a (3.1.11a)
+\pgflinewidth=\dimen286
+)
+(C:\Users\gyang\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcor
+etransformations.code.tex
+File: pgfcoretransformations.code.tex 2025-08-29 v3.1.11a (3.1.11a)
+\pgf@pt@x=\dimen287
+\pgf@pt@y=\dimen288
+\pgf@pt@temp=\dimen289
+)
+(C:\Users\gyang\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcor
+equick.code.tex
+File: pgfcorequick.code.tex 2025-08-29 v3.1.11a (3.1.11a)
+)
+(C:\Users\gyang\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcor
+eobjects.code.tex
+File: pgfcoreobjects.code.tex 2025-08-29 v3.1.11a (3.1.11a)
+)
+(C:\Users\gyang\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcor
+epathprocessing.code.tex
+File: pgfcorepathprocessing.code.tex 2025-08-29 v3.1.11a (3.1.11a)
+)
+(C:\Users\gyang\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcor
+earrows.code.tex
+File: pgfcorearrows.code.tex 2025-08-29 v3.1.11a (3.1.11a)
+\pgfarrowsep=\dimen290
+)
+(C:\Users\gyang\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcor
+eshade.code.tex
+File: pgfcoreshade.code.tex 2025-08-29 v3.1.11a (3.1.11a)
+\pgf@max=\dimen291
+\pgf@sys@shading@range@num=\count340
+\pgf@shadingcount=\count341
+)
+(C:\Users\gyang\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcor
+eimage.code.tex
+File: pgfcoreimage.code.tex 2025-08-29 v3.1.11a (3.1.11a)
+)
+(C:\Users\gyang\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcor
+eexternal.code.tex
+File: pgfcoreexternal.code.tex 2025-08-29 v3.1.11a (3.1.11a)
+\pgfexternal@startupbox=\box72
+)
+(C:\Users\gyang\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcor
+elayers.code.tex
+File: pgfcorelayers.code.tex 2025-08-29 v3.1.11a (3.1.11a)
+)
+(C:\Users\gyang\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcor
+etransparency.code.tex
+File: pgfcoretransparency.code.tex 2025-08-29 v3.1.11a (3.1.11a)
+)
+(C:\Users\gyang\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcor
+epatterns.code.tex
+File: pgfcorepatterns.code.tex 2025-08-29 v3.1.11a (3.1.11a)
+)
+(C:\Users\gyang\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcor
+erdf.code.tex
+File: pgfcorerdf.code.tex 2025-08-29 v3.1.11a (3.1.11a)
+)))
+(C:\Users\gyang\AppData\Local\Programs\MiKTeX\tex/generic/pgf/modules\pgfmodule
+shapes.code.tex
+File: pgfmoduleshapes.code.tex 2025-08-29 v3.1.11a (3.1.11a)
+\pgfnodeparttextbox=\box73
+)
+(C:\Users\gyang\AppData\Local\Programs\MiKTeX\tex/generic/pgf/modules\pgfmodule
+plot.code.tex
+File: pgfmoduleplot.code.tex 2025-08-29 v3.1.11a (3.1.11a)
+)
+(C:\Users\gyang\AppData\Local\Programs\MiKTeX\tex/latex/pgf/compatibility\pgfco
+mp-version-0-65.sty
+Package: pgfcomp-version-0-65 2025-08-29 v3.1.11a (3.1.11a)
+\pgf@nodesepstart=\dimen292
+\pgf@nodesepend=\dimen293
+)
+(C:\Users\gyang\AppData\Local\Programs\MiKTeX\tex/latex/pgf/compatibility\pgfco
+mp-version-1-18.sty
+Package: pgfcomp-version-1-18 2025-08-29 v3.1.11a (3.1.11a)
+))
+(C:\Users\gyang\AppData\Local\Programs\MiKTeX\tex/latex/pgf/utilities\pgffor.st
+y
+(C:\Users\gyang\AppData\Local\Programs\MiKTeX\tex/latex/pgf/utilities\pgfkeys.s
+ty
+(C:\Users\gyang\AppData\Local\Programs\MiKTeX\tex/generic/pgf/utilities\pgfkeys
+.code.tex))
+(C:\Users\gyang\AppData\Local\Programs\MiKTeX\tex/latex/pgf/math\pgfmath.sty
+(C:\Users\gyang\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmath.code
+.tex))
+(C:\Users\gyang\AppData\Local\Programs\MiKTeX\tex/generic/pgf/utilities\pgffor.
+code.tex
+Package: pgffor 2025-08-29 v3.1.11a (3.1.11a)
+\pgffor@iter=\dimen294
+\pgffor@skip=\dimen295
+\pgffor@stack=\toks35
+\pgffor@toks=\toks36
+))
+(C:\Users\gyang\AppData\Local\Programs\MiKTeX\tex/generic/pgf/frontendlayer/tik
+z\tikz.code.tex
+Package: tikz 2025-08-29 v3.1.11a (3.1.11a)
+
+(C:\Users\gyang\AppData\Local\Programs\MiKTeX\tex/generic/pgf/libraries\pgflibr
+aryplothandlers.code.tex
+File: pgflibraryplothandlers.code.tex 2025-08-29 v3.1.11a (3.1.11a)
+\pgf@plot@mark@count=\count342
+\pgfplotmarksize=\dimen296
+)
+\tikz@lastx=\dimen297
+\tikz@lasty=\dimen298
+\tikz@lastxsaved=\dimen299
+\tikz@lastysaved=\dimen300
+\tikz@lastmovetox=\dimen301
+\tikz@lastmovetoy=\dimen302
+\tikzleveldistance=\dimen303
+\tikzsiblingdistance=\dimen304
+\tikz@figbox=\box74
+\tikz@figbox@bg=\box75
+\tikz@tempbox=\box76
+\tikz@tempbox@bg=\box77
+\tikztreelevel=\count343
+\tikznumberofchildren=\count344
+\tikznumberofcurrentchild=\count345
+\tikz@fig@count=\count346
+
+(C:\Users\gyang\AppData\Local\Programs\MiKTeX\tex/generic/pgf/modules\pgfmodule
+matrix.code.tex
+File: pgfmodulematrix.code.tex 2025-08-29 v3.1.11a (3.1.11a)
+\pgfmatrixcurrentrow=\count347
+\pgfmatrixcurrentcolumn=\count348
+\pgf@matrix@numberofcolumns=\count349
+)
+\tikz@expandcount=\count350
+
+(C:\Users\gyang\AppData\Local\Programs\MiKTeX\tex/generic/pgf/frontendlayer/tik
+z/libraries\tikzlibrarytopaths.code.tex
+File: tikzlibrarytopaths.code.tex 2025-08-29 v3.1.11a (3.1.11a)
+)))
 (C:\Users\gyang\AppData\Local\Programs\MiKTeX\tex/latex/eso-pic\eso-pic.sty
 Package: eso-pic 2023/05/03 v3.0c eso-pic (RN)
-\ESO@tempdima=\dimen199
-\ESO@tempdimb=\dimen256
+\ESO@tempdima=\dimen305
+\ESO@tempdimb=\dimen306
 )
 Package translations Info: No language package found. I am going to use `englis
-h' as default language. on input line 30.
+h' as default language. on input line 31.
 
 (C:\Users\gyang\AppData\Local\Programs\MiKTeX\tex/latex/l3backend\l3backend-pdf
 tex.def
 File: l3backend-pdftex.def 2025-10-09 L3 backend support: PDF output (pdfTeX)
-\l__color_backend_stack_int=\count330
+\l__color_backend_stack_int=\count351
 ) (IEEE-conference-template-062824.aux)
 \openout1 = `IEEE-conference-template-062824.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 30.
-LaTeX Font Info:    ... okay on input line 30.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 30.
-LaTeX Font Info:    ... okay on input line 30.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 30.
-LaTeX Font Info:    ... okay on input line 30.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 30.
-LaTeX Font Info:    ... okay on input line 30.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 30.
-LaTeX Font Info:    ... okay on input line 30.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 30.
-LaTeX Font Info:    ... okay on input line 30.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 30.
-LaTeX Font Info:    ... okay on input line 30.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 31.
+LaTeX Font Info:    ... okay on input line 31.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 31.
+LaTeX Font Info:    ... okay on input line 31.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 31.
+LaTeX Font Info:    ... okay on input line 31.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 31.
+LaTeX Font Info:    ... okay on input line 31.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 31.
+LaTeX Font Info:    ... okay on input line 31.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 31.
+LaTeX Font Info:    ... okay on input line 31.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 31.
+LaTeX Font Info:    ... okay on input line 31.
 
 -- Lines per column: 56 (exact).
 
 (C:\Users\gyang\AppData\Local\Programs\MiKTeX\tex/context/base/mkii\supp-pdf.mk
 ii
 [Loading MPS to PDF converter (version 2006.09.02).]
-\scratchcounter=\count331
-\scratchdimen=\dimen257
-\scratchbox=\box67
-\nofMPsegments=\count332
-\nofMParguments=\count333
-\everyMPshowfont=\toks25
-\MPscratchCnt=\count334
-\MPscratchDim=\dimen258
-\MPnumerator=\count335
-\makeMPintoPDFobject=\count336
-\everyMPtoPDFconversion=\toks26
+\scratchcounter=\count352
+\scratchdimen=\dimen307
+\scratchbox=\box78
+\nofMPsegments=\count353
+\nofMParguments=\count354
+\everyMPshowfont=\toks37
+\MPscratchCnt=\count355
+\MPscratchDim=\dimen308
+\MPnumerator=\count356
+\makeMPintoPDFobject=\count357
+\everyMPtoPDFconversion=\toks38
 )
 (C:\Users\gyang\AppData\Local\Programs\MiKTeX\tex/latex/epstopdf-pkg\epstopdf-b
 ase.sty
@@ -448,139 +751,90 @@ File: translations-basic-dictionary-english.trsl (english translation file `tra
 nslations-basic-dictionary')
 )
 Package translations Info: loading dictionary `translations-basic-dictionary' f
-or `english'. on input line 30.
-LaTeX Font Info:    Trying to load font information for U+msa on input line 77.
+or `english'. on input line 31.
+LaTeX Font Info:    Trying to load font information for U+msa on input line 78.
 
 
 (C:\Users\gyang\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
-LaTeX Font Info:    Trying to load font information for U+msb on input line 77.
+LaTeX Font Info:    Trying to load font information for U+msb on input line 78.
 
 
 (C:\Users\gyang\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 )
-
-LaTeX Warning: Citation `b7' on page 1 undefined on input line 78.
-
-
-LaTeX Warning: Citation `b8' on page 1 undefined on input line 80.
-
-
-LaTeX Warning: Citation `b8' on page 1 undefined on input line 82.
-
-<figures/1.vsi_background.jpg, id=1, 1027.84pt x 980.66376pt>
+<figures/1.vsi_background.jpg, id=4, 1027.84pt x 980.66376pt>
 File: figures/1.vsi_background.jpg Graphic file (type jpg)
 <use figures/1.vsi_background.jpg>
-Package pdftex.def Info: figures/1.vsi_background.jpg  used on input line 87.
+Package pdftex.def Info: figures/1.vsi_background.jpg  used on input line 88.
 (pdftex.def)             Requested size: 201.60077pt x 192.34346pt.
-
-LaTeX Warning: Citation `b7' on page 1 undefined on input line 94.
-
-
-LaTeX Warning: Citation `b8' on page 1 undefined on input line 94.
-
-
-LaTeX Warning: Citation `b9' on page 1 undefined on input line 94.
-
-
-LaTeX Warning: Citation `b9' on page 1 undefined on input line 96.
-
-
-LaTeX Warning: Citation `b10' on page 1 undefined on input line 96.
-
-
-LaTeX Warning: Citation `b7' on page 1 undefined on input line 98.
-
-
-LaTeX Warning: Citation `b11' on page 1 undefined on input line 98.
-
-
-LaTeX Warning: Citation `b12' on page 1 undefined on input line 98.
 
 [1{C:/Users/gyang/AppData/Local/MiKTeX/fonts/map/pdftex/pdftex.map}{C:/Users/gy
 ang/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/base/8r.enc}
 
 
  <./figures/1.vsi_background.jpg>]
-
-LaTeX Warning: Citation `b7' on page 2 undefined on input line 145.
-
-
-LaTeX Warning: Citation `b7' on page 2 undefined on input line 148.
-
+<figures/hall_sensor_misaligned_physical.png, id=14, 326.72063pt x 319.1925pt>
+File: figures/hall_sensor_misaligned_physical.png Graphic file (type png)
+<use figures/hall_sensor_misaligned_physical.png>
+Package pdftex.def Info: figures/hall_sensor_misaligned_physical.png  used on i
+nput line 178.
+(pdftex.def)             Requested size: 151.20154pt x 147.71675pt.
+ [2 <./figures/hall_sensor_misaligned_physical.png>]
+<figures/hall_sensor_comparison_paper.png, id=27, 619.8357pt x 292.6935pt>
+File: figures/hall_sensor_comparison_paper.png Graphic file (type png)
+<use figures/hall_sensor_comparison_paper.png>
+Package pdftex.def Info: figures/hall_sensor_comparison_paper.png  used on inpu
+t line 199.
+(pdftex.def)             Requested size: 252.0pt x 118.99576pt.
+ [3 <./figures/hall_sensor_comparison_paper.png>]
 <C:/Users/gyang/.gemini/antigravity/brain/b08294ba-f3f3-4f5f-9c56-ce80970f78f6/
-uploaded_image_4_1765166429764.png, id=11, 542.025pt x 694.595pt>
-File: C:/Users/gyang/.gemini/antigravity/brain/b08294ba-f3f3-4f5f-9c56-ce80970f
-78f6/uploaded_image_4_1765166429764.png Graphic file (type png)
-<use C:/Users/gyang/.gemini/antigravity/brain/b08294ba-f3f3-4f5f-9c56-ce80970f7
-8f6/uploaded_image_4_1765166429764.png>
-Package pdftex.def Info: C:/Users/gyang/.gemini/antigravity/brain/b08294ba-f3f3
--4f5f-9c56-ce80970f78f6/uploaded_image_4_1765166429764.png  used on input line 
-154.
-(pdftex.def)             Requested size: 252.0pt x 322.93034pt.
-
-LaTeX Warning: Citation `b9' on page 2 undefined on input line 164.
-
-[2]
-<C:/Users/gyang/.gemini/antigravity/brain/b08294ba-f3f3-4f5f-9c56-ce80970f78f6/
-uploaded_image_1_1765166842486.png, id=23, 523.9575pt x 131.49126pt>
-File: C:/Users/gyang/.gemini/antigravity/brain/b08294ba-f3f3-4f5f-9c56-ce80970f
-78f6/uploaded_image_1_1765166842486.png Graphic file (type png)
-<use C:/Users/gyang/.gemini/antigravity/brain/b08294ba-f3f3-4f5f-9c56-ce80970f7
-8f6/uploaded_image_1_1765166842486.png>
-Package pdftex.def Info: C:/Users/gyang/.gemini/antigravity/brain/b08294ba-f3f3
--4f5f-9c56-ce80970f78f6/uploaded_image_1_1765166842486.png  used on input line 
-227.
-(pdftex.def)             Requested size: 252.0pt x 63.24147pt.
- [3 <C:/Users/gyang/.gemini/antigravity/brain/b08294ba-f3f3-4f5f-9c56-ce80970f7
-8f6/uploaded_image_4_1765166429764.png>]
-<C:/Users/gyang/.gemini/antigravity/brain/b08294ba-f3f3-4f5f-9c56-ce80970f78f6/
-uploaded_image_3_1765166842486.png, id=28, 678.535pt x 526.96875pt>
+uploaded_image_3_1765166842486.png, id=32, 678.535pt x 526.96875pt>
 File: C:/Users/gyang/.gemini/antigravity/brain/b08294ba-f3f3-4f5f-9c56-ce80970f
 78f6/uploaded_image_3_1765166842486.png Graphic file (type png)
 <use C:/Users/gyang/.gemini/antigravity/brain/b08294ba-f3f3-4f5f-9c56-ce80970f7
 8f6/uploaded_image_3_1765166842486.png>
 Package pdftex.def Info: C:/Users/gyang/.gemini/antigravity/brain/b08294ba-f3f3
 -4f5f-9c56-ce80970f78f6/uploaded_image_3_1765166842486.png  used on input line 
-246.
+334.
 (pdftex.def)             Requested size: 252.0pt x 195.70709pt.
-<C:/Users/gyang/.gemini/antigravity/brain/b08294ba-f3f3-4f5f-9c56-ce80970f78f6/
-uploaded_image_4_1765166842486.png, id=29, 706.64pt x 877.2775pt>
-File: C:/Users/gyang/.gemini/antigravity/brain/b08294ba-f3f3-4f5f-9c56-ce80970f
-78f6/uploaded_image_4_1765166842486.png Graphic file (type png)
-<use C:/Users/gyang/.gemini/antigravity/brain/b08294ba-f3f3-4f5f-9c56-ce80970f7
-8f6/uploaded_image_4_1765166842486.png>
-Package pdftex.def Info: C:/Users/gyang/.gemini/antigravity/brain/b08294ba-f3f3
--4f5f-9c56-ce80970f78f6/uploaded_image_4_1765166842486.png  used on input line 
-254.
-(pdftex.def)             Requested size: 252.0pt x 312.84793pt.
-<C:/Users/gyang/.gemini/antigravity/brain/b08294ba-f3f3-4f5f-9c56-ce80970f78f6/
-uploaded_image_1_1765166971627.png, id=30, 944.52875pt x 793.96625pt>
-File: C:/Users/gyang/.gemini/antigravity/brain/b08294ba-f3f3-4f5f-9c56-ce80970f
-78f6/uploaded_image_1_1765166971627.png Graphic file (type png)
-<use C:/Users/gyang/.gemini/antigravity/brain/b08294ba-f3f3-4f5f-9c56-ce80970f7
-8f6/uploaded_image_1_1765166971627.png>
-Package pdftex.def Info: C:/Users/gyang/.gemini/antigravity/brain/b08294ba-f3f3
--4f5f-9c56-ce80970f78f6/uploaded_image_1_1765166971627.png  used on input line 
-265.
-(pdftex.def)             Requested size: 252.0pt x 211.8296pt.
-<C:/Users/gyang/.gemini/antigravity/brain/b08294ba-f3f3-4f5f-9c56-ce80970f78f6/
-uploaded_image_2_1765166971627.png, id=31, 882.29625pt x 709.65125pt>
-File: C:/Users/gyang/.gemini/antigravity/brain/b08294ba-f3f3-4f5f-9c56-ce80970f
-78f6/uploaded_image_2_1765166971627.png Graphic file (type png)
-<use C:/Users/gyang/.gemini/antigravity/brain/b08294ba-f3f3-4f5f-9c56-ce80970f7
-8f6/uploaded_image_2_1765166971627.png>
-Package pdftex.def Info: C:/Users/gyang/.gemini/antigravity/brain/b08294ba-f3f3
--4f5f-9c56-ce80970f78f6/uploaded_image_2_1765166971627.png  used on input line 
-273.
-(pdftex.def)             Requested size: 252.0pt x 202.68584pt.
+<figures/torque_comparison_paper.png, id=33, 586.3506pt x 369.5406pt>
+File: figures/torque_comparison_paper.png Graphic file (type png)
+<use figures/torque_comparison_paper.png>
+Package pdftex.def Info: figures/torque_comparison_paper.png  used on input lin
+e 342.
+(pdftex.def)             Requested size: 252.0pt x 158.8204pt.
  [4 <C:/Users/gyang/.gemini/antigravity/brain/b08294ba-f3f3-4f5f-9c56-ce80970f7
-8f6/uploaded_image_1_1765166842486.png> <C:/Users/gyang/.gemini/antigravity/bra
-in/b08294ba-f3f3-4f5f-9c56-ce80970f78f6/uploaded_image_3_1765166842486.png> <C:
-/Users/gyang/.gemini/antigravity/brain/b08294ba-f3f3-4f5f-9c56-ce80970f78f6/upl
-oaded_image_4_1765166842486.png>]
+8f6/uploaded_image_3_1765166842486.png> <./figures/torque_comparison_paper.png>
+]
+<figures/current_transient_compare.png, id=39, 722.7pt x 433.62pt>
+File: figures/current_transient_compare.png Graphic file (type png)
+<use figures/current_transient_compare.png>
+Package pdftex.def Info: figures/current_transient_compare.png  used on input l
+ine 353.
+(pdftex.def)             Requested size: 252.0pt x 151.20026pt.
+<figures/current_transient_stacked_inset.png, id=40, 1019.7297pt x 452.4102pt>
+File: figures/current_transient_stacked_inset.png Graphic file (type png)
+<use figures/current_transient_stacked_inset.png>
+Package pdftex.def Info: figures/current_transient_stacked_inset.png  used on i
+nput line 359.
+(pdftex.def)             Requested size: 252.0pt x 111.79756pt.
+<figures/speed_step_placeholder.png, id=41, 349.7868pt x 251.4996pt>
+File: figures/speed_step_placeholder.png Graphic file (type png)
+<use figures/speed_step_placeholder.png>
+Package pdftex.def Info: figures/speed_step_placeholder.png  used on input line
+ 367.
+(pdftex.def)             Requested size: 252.0pt x 181.19086pt.
+<figures/torque_step_placeholder.png, id=42, 349.7868pt x 251.4996pt>
+File: figures/torque_step_placeholder.png Graphic file (type png)
+<use figures/torque_step_placeholder.png>
+Package pdftex.def Info: figures/torque_step_placeholder.png  used on input lin
+e 375.
+(pdftex.def)             Requested size: 252.0pt x 181.19086pt.
+ [5 <./figures/current_transient_compare.png> <./figures/current_transient_stac
+ked_inset.png> <./figures/speed_step_placeholder.png> <./figures/torque_step_pl
+aceholder.png>]
 
 ** Conference Paper **
 Before submitting the final camera ready copy, remember to:
@@ -592,27 +846,22 @@ Before submitting the final camera ready copy, remember to:
  uses only Type 1 fonts and that every step in the generation
  process uses the appropriate paper size.
 
-[5 <C:/Users/gyang/.gemini/antigravity/brain/b08294ba-f3f3-4f5f-9c56-ce80970f78
-f6/uploaded_image_1_1765166971627.png> <C:/Users/gyang/.gemini/antigravity/brai
-n/b08294ba-f3f3-4f5f-9c56-ce80970f78f6/uploaded_image_2_1765166971627.png>]
-(IEEE-conference-template-062824.aux)
+[6
+
+] (IEEE-conference-template-062824.aux)
  ***********
 LaTeX2e <2025-11-01>
 L3 programming layer <2025-11-06>
  ***********
-
-
-LaTeX Warning: There were undefined references.
-
  ) 
 Here is how much of TeX's memory you used:
- 12055 strings out of 467871
- 271371 string characters out of 5418376
- 681626 words of memory out of 5000000
- 40839 multiletter control sequences out of 15000+600000
- 667863 words of font info for 117 fonts, out of 8000000 for 9000
+ 22218 strings out of 467871
+ 493780 string characters out of 5418376
+ 833592 words of memory out of 5000000
+ 50800 multiletter control sequences out of 15000+600000
+ 666756 words of font info for 116 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 73i,11n,80p,1073b,850s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 84i,11n,94p,1073b,850s stack positions out of 10000i,1000n,20000p,200000b,200000s
 <C:/Users/gyang/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/
 cmbx10.pfb><C:/Users/gyang/AppData/Local/Programs/MiKTeX/fonts/type1/public/ams
 fonts/cm/cmex10.pfb><C:/Users/gyang/AppData/Local/Programs/MiKTeX/fonts/type1/p
@@ -630,10 +879,10 @@ s/utmb8a.pfb><C:/Users/gyang/AppData/Local/Programs/MiKTeX/fonts/type1/urw/time
 s/utmbi8a.pfb><C:/Users/gyang/AppData/Local/Programs/MiKTeX/fonts/type1/urw/tim
 es/utmr8a.pfb><C:/Users/gyang/AppData/Local/Programs/MiKTeX/fonts/type1/urw/tim
 es/utmri8a.pfb>
-Output written on IEEE-conference-template-062824.pdf (5 pages, 1023227 bytes).
+Output written on IEEE-conference-template-062824.pdf (6 pages, 1824090 bytes).
 
 PDF statistics:
- 108 PDF objects out of 1000 (max. 8388607)
+ 118 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)
- 36 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 58 words of extra memory for PDF output out of 10000 (max. 10000000)
 

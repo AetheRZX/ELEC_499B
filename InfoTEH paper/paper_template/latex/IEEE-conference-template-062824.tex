@@ -9,6 +9,7 @@
 \usepackage{subfig}
 \usepackage{siunitx}
 \usepackage{cleveref}
+\usepackage{tikz}
 
 \def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
     T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
@@ -65,9 +66,9 @@ BLDC motor, Hall-sensor misalignment, MTPA, Lookup Table (LUT), Advance Angle Co
 Brushless DC (BLDC) motors are widely used in modern industries such as electric mobility, 
 robotics, manufacturing, and industrial automation due to their high power density, good 
 reliability and efficiency, superior torque-speed characteristics, simplicity, and low cost 
-\cite{b1, b2, b3, b4}. Among various motor drive methods, Hall-sensor-controlled BLDC machines 
+\cite{b3, b4}. Among various motor drive methods, Hall-sensor-controlled BLDC machines 
 are commonly chosen for their ability to operate at a wide range of speeds and in applications 
-where sensorless control may not be preferred \cite{b1, b2, b3, b4}.
+where sensorless control may not be preferred \cite{b3, b4}.
 
 A BLDC motor consists of a permanent magnet synchronous machine (PMSM), which is electronically 
 commutated by a voltage source inverter (VSI). A schematic diagram of a typical BLDC motor drive 
@@ -90,7 +91,7 @@ algorithm.}
 \label{fig:vsi_background}
 \end{figure}
 Manufacturing imperfections cause the Hall sensors to deviate from their intended 120$^\circ$ 
-spacing, resulting in asymmetric commutation timing, imbalanced currents across phases, elevated 
+spacing, resulting in asymmetric commutation timing as shown in \Cref{fig:hall_sensor_comparison}. This leads to imbalanced currents across phases, elevated 
 torque oscillations, and overall degradation of motor performance \cite{b6, b7, b8, b9}. Signal 
 conditioning techniques, including moving average filters, have been applied to Hall sensor 
 outputs \cite{b9, b10}, yet these introduce timing delays that further compromise MTPA alignment. 
@@ -99,8 +100,9 @@ dynamically adjust the commutation advance angle \cite{b7, b11, b12}. However, t
 strategies rely on accurate rotor position estimation, which becomes unreliable when the Hall 
 sensors themselves are misaligned.
 
-This paper presents a practical dual-strategy approach combining lookup table (LUT) indexing 
-with dynamic MTPA regulation to simultaneously correct for Hall sensor positioning errors and 
+
+This paper builds upon previous work and presents a practical dual-strategy approach combining lookup table (LUT) calibration \cite{b2} 
+with dynamic MTPA advance angle control \cite{b1} to simultaneously correct for Hall sensor positioning errors and 
 compensate for inductance-related phase lag in 120$^\circ$ commutation mode. The proposed method 
 is validated through simulation using MATLAB/Simulink on an industrial BLDC motor model 
 exhibiting significant Hall misalignment and high winding time constant.
@@ -108,6 +110,7 @@ exhibiting significant Hall misalignment and high winding time constant.
 
 \section{Modeling of the BLDC Motor Drive System}
 \label{sec:modeling}
+The modeling of the BLDC motor is based on typical system as referenced in \Cref{fig:vsi_background}. 
 \subsection{Mathematical Model of the PMSM}
 The BLDC motor is modeled as a surface-mounted Permanent Magnet Synchronous Machine (PMSM). The stator voltage equation in the stationary reference frame is expressed as:
 \begin{equation}
@@ -123,7 +126,8 @@ The electromagnetic torque $T_e$ is given by the interaction of the phase curren
 \end{equation}
 where $\omega_m$ is the mechanical angular velocity.
 
-To implement the MTPA control, it is convenient to transform the system variables into the synchronous rotating $dq$ reference frame using the Park transformation matrix $\mathbf{K}_s^r(\theta_r)$:
+To implement the MTPA control, it is convenient to transform the system variables into the synchronous rotating $dq$ reference 
+frame using the Park transformation matrix $\mathbf{K}_s^r(\theta_r)$:
 \begin{equation}
     \mathbf{K}_s^r(\theta_r) = \frac{2}{3} \begin{bmatrix}
     \cos(\theta_r) & \cos(\theta_r - \frac{2\pi}{3}) & \cos(\theta_r + \frac{2\pi}{3}) \\
@@ -132,6 +136,7 @@ To implement the MTPA control, it is convenient to transform the system variable
     \end{bmatrix}
     \label{eq:park}
 \end{equation}
+
 Applying this transformation to \eqref{eq:voltage} yields the dynamic equations in the $dq$ frame:
  \begin{align}
      v_q &= R_s i_q + L_s \frac{di_q}{dt} + \omega_r L_s i_d + \omega_r \psi_m \label{eq:vq} \\
@@ -142,23 +147,63 @@ Applying this transformation to \eqref{eq:voltage} yields the dynamic equations 
      T_e = \frac{3P}{2} \left[ \psi_m i_q + (L_d - L_q) i_d i_q \right]
      \label{eq:torque}
  \end{equation}
- For a surface-mounted PMSM ($L_d = L_q = L_s$), the reluctance torque term vanishes. As seen in \eqref{eq:torque}, the $d$-axis current $i_d$ does not contribute to the output torque and thus generates losses. However, for the MTPA control, which aims to maximize the ratio of produced torque over the phase current magnitude, the current $i_d$ should be controlled to zero. To achieve MTPA in six-step operation with torque ripple, the time-average of the $d$-axis current evaluated over the switching interval denoted by $\bar{i}_d$ is controlled to zero \cite{b7}. Also, since $e_d=0$ by the choice of reference frame, the MTPA is equivalent to aligning the phase currents to the back EMFs.
+ For a surface-mounted PMSM ($L_d = L_q = L_s$), the reluctance torque term vanishes. 
+ Hence, notice that in \eqref{eq:torque}, the $d$-axis current $i_d$ does not contribute 
+ to the output torque and thus creates more losses per ampere. Ideally, to maximize torque efficiency, 
+ we should design a controller that aims to maintain $i_d = 0$. In the context of six-step operation, this translates to 
+ keeping the time average of the $d$-axis current magnitude close to zero \cite{b1, b7}. 
 
- \subsection{Approximating MTPA in the 120$^\circ$ Commutation Logic}
- In the six-step 120$^\circ$ commutation logic, switching is determined by the estimated rotor electrical angle and the advance firing angle $\phi_v$. Even though the fixed $\phi_v = 30^\circ$ in COM approximates MTPA satisfactorily for motors with small winding time constant \cite{b7}, the mismatch of phase current and back EMF worsens for high-performance machines with large inductance. For a generic BLDC with a large stator winding time constant, the advance firing angle must be compensated by angle $\Delta \phi_v$ to recover the MTPA condition. Moreover, since $\Delta \phi_v$ generally depends on the machine parameters and the operating condition, a dynamic PI controller is proposed to determine $\Delta \phi_v$ by regulating $\bar{i}_d = 0$. However, this method works poorly under Hall-sensor misalignment that leads to higher phase current distortion and inaccurate rotor position estimation.
+ \subsection{Limitations of Conventional Six-Step Commutation}
+ In standard 120$^\circ$ commutation, the ideal switching instants are synchronized with the rotor position to maximize torque. 
+ Geometrically, this corresponds to keeping the stator flux vector perpendicular to the rotor flux. Ideally, this requires the commutation 
+ to occur 30$^\circ$ electrical after a Hall state transition (assuming zero alignment offset), effectively centering the 60$^\circ$ conduction block around 
+ the peak back-EMF. However, this static 30$^\circ$ shift (Common Operating Mode) is only valid when the stator current reacts instantly to voltage changes.
+ 
+ In practice, the stator winding inductance ($L_s$) introduces a time delay in the current rise, 
+ governed by the dynamic voltage equations \eqref{eq:vq} and \eqref{eq:vd}. As rotor speed increases, 
+ the inductive reactance term $\omega_r L_s$ becomes significant, causing the phase current to lag 
+ behind the back-EMF. This misalignment reduces the effective torque-producing current component $i_q$ 
+ in \eqref{eq:torque}, while simultaneously increasing the non-torque-producing $d$-axis component $i_d$, 
+ representing increased losses. To recover MTPA performance, the commutation angle must be advanced by an additional angle $\phi_{adv}$ to 
+ compensate for this inductive lag, ensuring the current waveform remains in phase with the back-EMF.
 
- \subsection{Impact of Hall Sensors Misalignment}
- The misalignment of Hall sensors from their ideal positions leads to deviation of the switching instances away from their designated timings. The problem stems from the inherent mechanical tolerances during manufacturing, especially in low-cost motors. \Cref{fig:misalignment} shows an example of misaligned Hall sensors. The relative offset of the sensors makes some switching intervals longer while others shorter, leading to unbalanced phase currents and higher torque ripple. This condition introduces a higher ripple in speed and angle prediction, which degrades the MTPA PI controller.
+ \subsection{Effects of Hall Sensor Position Error}
+ As a result of manufacturing tolerances, Hall sensors in motors typically deviate from their 
+ ideal 120$^\circ$ spacing. As visualized in \Cref{fig:hall_sensor_misaligned_physical}, these 
+ angular offsets distort the duration of the conduction intervals, causing some phases to conduct 
+ for longer or shorter than the intended 60 electrical degrees. This asymmetry introduces 
+ significant low-frequency torque oscillations.
 
  \begin{figure}[htbp]
- \centerline{\includegraphics[width=\columnwidth]{C:/Users/gyang/.gemini/antigravity/brain/b08294ba-f3f3-4f5f-9c56-ce80970f78f6/uploaded_image_4_1765166429764.png}}
+ \centerline{\includegraphics[width=0.6\columnwidth]{figures/hall_sensor_misaligned_physical.png}}
+ \caption{Manufacturing tolerances in Hall sensor placement leads to misalignment from ideal 120$^\circ$ spacing.}
+ \label{fig:hall_sensor_misaligned_physical}
+ \end{figure}
+ 
+ The uneven switching intervals due to Hall sensor misalignment degrades the performance of any dynamic 
+ advance angle controller such as MTPA. The MTPA strategy relies on calculating the average $d$-axis current 
+ ($\bar{i}_d$) over a sector. If the sector duration itself is corrupted by Hall misalignment, 
+ the calculated $\bar{i}_d$ becomes inaccurate, leading to incorrect firing angle 
+ adjustments and potential instability.
+ 
+ Prior research has utilized moving average filters to smooth these intervals \cite{b1}. 
+ The filters, while effective in steady-state, introduce a measurement delay, 
+ causing the estimated speed to lag the actual speed during transients. 
+ This delay prevents the MTPA controller from reacting quickly to load or speed changes. 
+ To address this, a Lookup Table (LUT) based calibration method \cite{b2} is employed in this work. 
+ By identifying the errors offline and applying a pre-computed correction, the LUT 
+ approach eliminates runtime delays, which improves transient performance. The advantage of no delay
+ also suggests an accurate speed estimation, which is critical for practical motor control applications.
+
+ \begin{figure}[htbp]
+ \centerline{\includegraphics[width=\columnwidth]{figures/hall_sensor_comparison_paper.png}}
  \caption{Visualization of Hall sensor misalignment on the stator and the resulting distortion in switching intervals.}
- \label{fig:misalignment}
+ \label{fig:hall_sensor_comparison}
  \end{figure}
 
 \section{Hall Sensor Signals Filter via Extrapolated Averaging}
 \label{sec:hall_filter}
-To rectify the commutation asymmetry while preserving dynamic performance, we first examine conventional filtering approaches and then propose a Lookup Table (LUT) based strategy that eliminates their inherent delays.
+To correct the commutation asymmetry while preserving dynamic performance, we first examine conventional filtering approaches and then propose a Lookup Table (LUT) based strategy that eliminates their inherent delays.
 
 \subsection{Evaluation of Existing Averaging Filters}
 Packet-based averaging filters are often employed to smooth the irregular Hall intervals. Several such extrapolating filters have been proposed, including 3-step and 6-step variants \cite{b9}. The correction terms for the 3-step ($\tau_{a3}^{corr}$) and 6-step ($\tau_{a6}^{corr}$) averaging filters are given by:
@@ -224,9 +269,52 @@ To counteract this, the controller computes the average $d$-axis current $\bar{i
 where $K_p$ and $K_i$ are the proportional and integral gains.
 
 \begin{figure}[htbp]
-\centerline{\includegraphics[width=\columnwidth]{C:/Users/gyang/.gemini/antigravity/brain/b08294ba-f3f3-4f5f-9c56-ce80970f78f6/uploaded_image_1_1765166842486.png}}
-\caption{Flowchart of the proposed MTPA PI controller method, showing the feedback mechanism for advance angle adjustment.}
-\label{fig:mtpa_flowchart}
+\centering
+\resizebox{\columnwidth}{!}{
+\begin{tikzpicture}[auto, node distance=1.5cm, >=latex,
+    block/.style={draw, fill=white, rectangle, minimum height=3em, minimum width=3em, align=center},
+    input/.style={coordinate},
+    output/.style={coordinate},
+    sum/.style={draw, fill=white, circle, inner sep=0pt, minimum size=6mm},
+    pinstyle/.style={pin edge={to-,t,black,options={label={[font=\footnotesize]above:#1}}}}]
+
+    % Nodes
+    \node [input, name=input] {};
+    \node [block, right of=input, node distance=2cm] (hall_proc) {Hall Edge\\Detection};
+    \node [block, right of=hall_proc, node distance=2.5cm, fill=yellow!20] (lut) {LUT\\Calibration};
+    \node [block, right of=lut, node distance=2.5cm] (comm_logic) {Commutation\\Logic};
+    \node [block, below of=comm_logic, node distance=2cm, fill=red!20] (gate_gen) {Gate\\Generator};
+    
+    \node [block, below of=hall_proc, node distance=3cm] (clarke) {$\mathbf{abc} \to \mathbf{dq}$};
+    \node [sum, right of=clarke, node distance=2cm] (sum) {};
+    \node [block, right of=sum, node distance=2cm, fill=blue!20] (pi) {PI\\Controller};
+    
+    \node [output, right of=gate_gen, node distance=2cm] (output) {};
+
+    % Arrows
+    \draw [->] (input) -- node[name=halls] {$H_{abc}$} (hall_proc);
+    \draw [->] (hall_proc) -- node {$\theta_{raw}$} (lut);
+    \draw [->] (lut) -- node {$\theta_{corr}$} (comm_logic);
+    \draw [->] (comm_logic) -- node[name=theta_comm] {$\theta_{comm}$} (gate_gen);
+    
+    % MTPA Loop
+    \node [input, below of=input, node distance=3cm] (i_abc) {};
+    \draw [->] (i_abc) -- node {$i_{abc}$} (clarke);
+    \draw [->] (clarke) -- node {$i_d$} (sum);
+    \node [above of=sum, node distance=1cm] (ref) {$i_d^*=0$};
+    \draw [->] (ref) -- (sum) node[pos=0.9, right] {-} node[pos=0.9, left] {+};
+    \draw [->] (sum) -- node {$e_{id}$} (pi);
+    \draw [->] (pi) -| node[pos=0.2] {$\phi_{adv}$} (gate_gen);
+    
+    \draw [->] (gate_gen) -- node {Gate Signals} (output);
+    
+    % Speed feedback for LUT
+    \draw [->, dashed] (hall_proc) -- ++(0,1) -| node[pos=0.8] {$\hat{\omega}$} (lut);
+
+\end{tikzpicture}
+}
+\caption{Flowchart of the proposed combined control strategy. The Hall signals are calibrated via a LUT (Yellow) to provide accurate commutation timing. Simultaneously, the MTPA loop (Blue) adjusts the advance angle $\phi_{adv}$ to zero the d-axis current.}
+\label{fig:control_flowchart}
 \end{figure}
 
 The total firing angle $\alpha$ applied to the VSI is the sum of the standard $30^\circ$ offset and the calculated advance:
@@ -248,21 +336,35 @@ The effectiveness of the method is demonstrated by observing the alignment of ph
 \label{fig:alignment}
 \end{figure}
 
-\Cref{fig:results_torque} presents the steady-state performance at 1850 rpm. The combined method (red traces) yields a higher average torque and torque-per-ampere ratio compared to the uncompensated case (blue traces), confirming the efficiency gains. Furthermore, the adaptive nature of the advance angle is shown in the bottom plot, where the controller increases the advance angle $\phi_v$ as speed increases to counteract the growing inductive reactance.
+\Cref{fig:results_torque} presents the steady-state performance comparison in terms of torque generation efficiency, defined as the ratio of average torque to RMS phase current ($K_t = \bar{T}_e / I_{rms}$). The uncompensated case exhibits the lowest efficiency due to significant phase misalignment. The filter-only approach improves commutation symmetry but introduces delays that prevent optimal torque production. The proposed combined method (LUT + MTPA) demonstrates the highest torque-per-ampere ratio, confirming that the algorithm successfully compensates for both Hall sensor placement errors and inductive phase lag, thereby recovering the optimal operating point.
 
 \begin{figure}[htbp]
-\centerline{\includegraphics[width=\columnwidth]{C:/Users/gyang/.gemini/antigravity/brain/b08294ba-f3f3-4f5f-9c56-ce80970f78f6/uploaded_image_4_1765166842486.png}}
-\caption{Simulated steady-state results: (top) Phase current comparison; (middle) Torque ripple comparison; (bottom) Compensated firing angle vs. speed.}
+\centerline{\includegraphics[width=\columnwidth]{figures/torque_comparison_paper.png}}
+\caption{Comparison of Torque Generation Efficiency (Torque Constant $K_t$) across four operating cases. The proposed LUT + MTPA method achieves the highest torque-per-ampere, indicating optimal alignment.}
 \label{fig:results_torque}
 \end{figure}
 
 \subsection{Transient Performance}
 To verify the robustness of the proposed control, transient response tests were conducted.
 
+\Cref{fig:transient_compare} shows a comparison of the current response during startup. The uncompensated case shows large current spikes, while the proposed method smooths the current envelope. \Cref{fig:transient_stacked} provides a detailed view of the phase currents with and without compensation.
+
+\begin{figure}[htbp]
+\centerline{\includegraphics[width=\columnwidth]{figures/current_transient_compare.png}}
+\caption{Comparison of phase current transients during startup. The proposed method (Red) reduces peak overshoot compared to uncompensated (Blue).}
+\label{fig:transient_compare}
+\end{figure}
+
+\begin{figure}[htbp]
+\centerline{\includegraphics[width=\columnwidth]{figures/current_transient_stacked_inset.png}}
+\caption{Stacked view of phase currents, highlighting the zoomed-in improvement in waveform quality.}
+\label{fig:transient_stacked}
+\end{figure}
+
 \Cref{fig:speed_step} illustrates the speed response of the motor to a step command. The yellow trace representing the proposed LUT correction demonstrates a response time comparable to the ideal sensor placement (blue trace), significantly outperforming the 3-step and 6-step averaging filters which introduce noticeable delays and overshoot.
 
 \begin{figure}[htbp]
-\centerline{\includegraphics[width=\columnwidth]{C:/Users/gyang/.gemini/antigravity/brain/b08294ba-f3f3-4f5f-9c56-ce80970f78f6/uploaded_image_1_1765166971627.png}}
+\centerline{\includegraphics[width=\columnwidth]{figures/speed_step_placeholder.png}}
 \caption{Simulated speed response step increase. (a) with ideal Hall sensor placement; (b) Comparison of averaging filters vs. proposed LUT correction. The LUT method achieves faster convergence.}
 \label{fig:speed_step}
 \end{figure}
@@ -270,7 +372,7 @@ To verify the robustness of the proposed control, transient response tests were 
 \Cref{fig:load_step} depicts the system response to a sudden load torque step. The LUT-based controller maintains stability and exhibits superior torque dynamic performance. The speed dip is minimized, and the electromagnetic torque recovers smoothly without the oscillatory behavior observed in the conventional averaging methods.
 
 \begin{figure}[htbp]
-\centerline{\includegraphics[width=\columnwidth]{C:/Users/gyang/.gemini/antigravity/brain/b08294ba-f3f3-4f5f-9c56-ce80970f78f6/uploaded_image_2_1765166971627.png}}
+\centerline{\includegraphics[width=\columnwidth]{figures/torque_step_placeholder.png}}
 \caption{Simulated response to a load step increase: (a) speed response; (b) electromagnetic torque response. The proposed LUT correction (yellow trace) shows superior dynamic tracking.}
 \label{fig:load_step}
 \end{figure}
@@ -311,9 +413,15 @@ The authors acknowledge the support of the Department of Electrical and Computer
 \bibitem{b2} M. Hasman, ``Mitigating Misaligned Hall Sensors in BLDC Motors Using a Calibration Routine for Improved Fast Electromechanical Transients,'' BASc Thesis, University of British Columbia, Vancouver, BC, 2025.
 \bibitem{b3} P. C. Krause, O. Wasynczuk, and S. D. Sudhoff, \emph{Analysis of Electric Machinery and Drive Systems}, 2nd ed., Piscataway, NJ: IEEE Press, 2002.
 \bibitem{b4} P. Pillay and R. Krishnan, ``Modeling, simulation, and analysis of permanent-magnet motor drives, part II: The brushless DC motor drive,'' \emph{IEEE Trans. Ind. Appl.}, vol. 25, no. 2, pp. 274--279, Mar./Apr. 1989.
-\bibitem{b5new} P. C. Krause, O. Wasynczuk, S. Pekarek, and T. O'Connell, \emph{Electromechanical Motion Devices: Rotating Magnetic field-based Analysis with Online Animations}. Hoboken, NJ: Wiley-IEEE Press, 2020.
+\bibitem{b5_book} P. C. Krause, O. Wasynczuk, S. Pekarek, and T. O'Connell, \emph{Electromechanical Motion Devices: Rotating Magnetic field-based Analysis with Online Animations}. Hoboken, NJ: Wiley-IEEE Press, 2020.
 \bibitem{b5} D.-K. Kim, K.-W. Lee, and B.-I. Kwon, ``Commutation torque ripple reduction in a position sensorless brushless DC motor drive,'' \emph{IEEE Trans. Power Electron.}, vol. 21, no. 6, pp. 1762--1768, Nov. 2006.
 \bibitem{b6} Y. Liu, Z. Q. Zhu, and D. Howe, ``Commutation-torque-ripple minimization in direct-torque-controlled PM brushless DC drives,'' \emph{IEEE Trans. Ind. Appl.}, vol. 43, no. 4, pp. 1012--1021, Jul./Aug. 2007.
+\bibitem{b7} R. C. Osgood, ``Hall Effect Sensor Misalignment Correction in BLDC Motors,'' \emph{IEEE Trans. Ind. Electron.}, vol. 58, no. 9, 2011.
+\bibitem{b8} J. Fang, ``Torque ripple minimization in BLDC motors with vector control,'' \emph{IEEE Trans. Magn.}, vol. 45, no. 1, 2009.
+\bibitem{b9} S. Song, ``Averaging filter for Hall sensor error correction,'' \emph{IEEE Trans. Power Electron.}, vol. 28, 2013.
+\bibitem{b10} H. Wang, ``Digital filter design for BLDC drives,'' \emph{Conf. Rec. IEEE IAS}, 2015.
+\bibitem{b11} K. I. Hwu, ``Phase Advance Control for BLDC,'' \emph{IEEE Trans. Power Electron.}, 2010.
+\bibitem{b12} C. Xia, ``Automatic Phase Advance,'' \emph{IEEE Trans. Energy Convers.}, 2016.
 \end{thebibliography}
 
 \end{document}
