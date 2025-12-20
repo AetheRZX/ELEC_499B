@@ -119,13 +119,6 @@ The BLDC motor is modeled as a surface-mounted Permanent Magnet Synchronous Mach
 \end{equation}
 where $\mathbf{v}_{abc}$, $\mathbf{i}_{abc}$, and $\mathbf{e}_{abc}$ are the phase voltage, current, and back-EMF vectors respectively. $R_s$ is the stator resistance and $L_s$ is the synchronous inductance.
 
-The electromagnetic torque $T_e$ is given by the interaction of the phase currents and back-EMF:
-\begin{equation}
-    T_e = \frac{1}{\omega_m} \sum_{k \in \{a,b,c\}} e_k i_k
-    \label{eq:torque_general}
-\end{equation}
-where $\omega_m$ is the mechanical angular velocity.
-
 To implement the MTPA control, it is convenient to transform the system variables into the synchronous rotating $dq$ reference 
 frame using the Park transformation matrix $\mathbf{K}_s^r(\theta_r)$:
 \begin{equation}
@@ -137,12 +130,13 @@ frame using the Park transformation matrix $\mathbf{K}_s^r(\theta_r)$:
     \label{eq:park}
 \end{equation}
 
-Applying this transformation to \eqref{eq:voltage} yields the dynamic equations in the $dq$ frame:
+From previous work in \cite{b1}, and applying that for PMSM, $L_{ss} = L_q = L_d$ applying this transformation to \eqref{eq:voltage} yields the dynamic equations in the $dq$ frame:
  \begin{align}
-     v_q &= R_s i_q + L_s \frac{di_q}{dt} + \omega_r L_s i_d + \omega_r \psi_m \label{eq:vq} \\
-     v_d &= R_s i_d + L_s \frac{di_d}{dt} - \omega_r L_s i_q \label{eq:vd}
+     v_q &= R_s i_q + L_q \frac{di_q}{dt} + \omega_r L_d i_d + \omega_r \psi_m \label{eq:vq} \\
+     v_d &= R_s i_d + L_d \frac{di_d}{dt} - \omega_r L_q i_q \label{eq:vd}
  \end{align}
- where $\omega_r = P\omega_m$ is the electrical rotor speed and $\psi_m$ is the permanent magnet flux linkage. The electromagnetic torque is given by:
+ where $\omega_r$ is the electrical rotor speed and $\psi_m$ is the permanent magnet flux linkage. By the principle of electromechanical energy 
+ conversion \cite{b3}, for a motor with $P$ pole pairs, the electromagnetic torque is given by:
  \begin{equation}
      T_e = \frac{3P}{2} \left[ \psi_m i_q + (L_d - L_q) i_d i_q \right]
      \label{eq:torque}
