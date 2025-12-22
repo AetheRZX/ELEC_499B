@@ -61,3 +61,8 @@ end
 
 % 2) Default to using the filter, not the LUT
 assignin('base','use_LUT',0);               % 0 = filter, 1 = LUT
+
+% For transient analysis
+t_vol_step = 0.55;
+V_step_final = 60;
+MTPA_activation_time = 0.6;
