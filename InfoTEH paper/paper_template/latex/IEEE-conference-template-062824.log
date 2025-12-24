@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.27 (MiKTeX 25.4) (preloaded format=pdflatex 2025.12.5)  11 DEC 2025 05:28
+This is pdfTeX, Version 3.141592653-2.6-1.40.27 (MiKTeX 25.4) (preloaded format=pdflatex 2025.12.5)  24 DEC 2025 03:29
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -690,7 +690,7 @@ Package: eso-pic 2023/05/03 v3.0c eso-pic (RN)
 \ESO@tempdimb=\dimen306
 )
 Package translations Info: No language package found. I am going to use `englis
-h' as default language. on input line 31.
+h' as default language. on input line 33.
 
 (C:\Users\gyang\AppData\Local\Programs\MiKTeX\tex/latex/l3backend\l3backend-pdf
 tex.def
@@ -699,20 +699,20 @@ File: l3backend-pdftex.def 2025-10-09 L3 backend support: PDF output (pdfTeX)
 ) (IEEE-conference-template-062824.aux)
 \openout1 = `IEEE-conference-template-062824.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 31.
-LaTeX Font Info:    ... okay on input line 31.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 31.
-LaTeX Font Info:    ... okay on input line 31.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 31.
-LaTeX Font Info:    ... okay on input line 31.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 31.
-LaTeX Font Info:    ... okay on input line 31.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 31.
-LaTeX Font Info:    ... okay on input line 31.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 31.
-LaTeX Font Info:    ... okay on input line 31.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 31.
-LaTeX Font Info:    ... okay on input line 31.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 33.
+LaTeX Font Info:    ... okay on input line 33.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 33.
+LaTeX Font Info:    ... okay on input line 33.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 33.
+LaTeX Font Info:    ... okay on input line 33.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 33.
+LaTeX Font Info:    ... okay on input line 33.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 33.
+LaTeX Font Info:    ... okay on input line 33.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 33.
+LaTeX Font Info:    ... okay on input line 33.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 33.
+LaTeX Font Info:    ... okay on input line 33.
 
 -- Lines per column: 56 (exact).
 
@@ -751,90 +751,278 @@ File: translations-basic-dictionary-english.trsl (english translation file `tra
 nslations-basic-dictionary')
 )
 Package translations Info: loading dictionary `translations-basic-dictionary' f
-or `english'. on input line 31.
-LaTeX Font Info:    Trying to load font information for U+msa on input line 78.
+or `english'. on input line 33.
 
+
+LaTeX Warning: Citation `b3' on page 1 undefined on input line 71.
+
+
+LaTeX Warning: Citation `b4' on page 1 undefined on input line 71.
+
+
+LaTeX Warning: Citation `b3' on page 1 undefined on input line 73.
+
+
+LaTeX Warning: Citation `b4' on page 1 undefined on input line 73.
+
+
+LaTeX Warning: Citation `b5' on page 1 undefined on input line 78.
+
+LaTeX Font Info:    Trying to load font information for U+msa on input line 80.
 
 (C:\Users\gyang\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
-LaTeX Font Info:    Trying to load font information for U+msb on input line 78.
+LaTeX Font Info:    Trying to load font information for U+msb on input line 80.
 
 
 (C:\Users\gyang\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 )
+
+LaTeX Warning: Citation `b5' on page 1 undefined on input line 80.
+
+
+LaTeX Warning: Citation `b7' on page 1 undefined on input line 81.
+
+
+LaTeX Warning: Citation `b8' on page 1 undefined on input line 83.
+
+
+LaTeX Warning: Citation `b8' on page 1 undefined on input line 85.
+
 <figures/1.vsi_background.jpg, id=4, 1027.84pt x 980.66376pt>
 File: figures/1.vsi_background.jpg Graphic file (type jpg)
 <use figures/1.vsi_background.jpg>
-Package pdftex.def Info: figures/1.vsi_background.jpg  used on input line 88.
+Package pdftex.def Info: figures/1.vsi_background.jpg  used on input line 90.
 (pdftex.def)             Requested size: 201.60077pt x 192.34346pt.
+
+LaTeX Warning: Citation `b6' on page 1 undefined on input line 97.
+
+
+LaTeX Warning: Citation `b7' on page 1 undefined on input line 97.
+
+
+LaTeX Warning: Citation `b8' on page 1 undefined on input line 97.
+
+
+LaTeX Warning: Citation `b9' on page 1 undefined on input line 97.
+
+
+LaTeX Warning: Citation `b9' on page 1 undefined on input line 99.
+
+
+LaTeX Warning: Citation `b10' on page 1 undefined on input line 99.
+
+
+LaTeX Warning: Citation `b7' on page 1 undefined on input line 101.
+
+
+LaTeX Warning: Citation `b11' on page 1 undefined on input line 101.
+
+
+LaTeX Warning: Citation `b12' on page 1 undefined on input line 101.
 
 [1{C:/Users/gyang/AppData/Local/MiKTeX/fonts/map/pdftex/pdftex.map}{C:/Users/gy
 ang/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/base/8r.enc}
 
 
  <./figures/1.vsi_background.jpg>]
-<figures/hall_sensor_misaligned_physical.png, id=14, 326.72063pt x 319.1925pt>
+
+LaTeX Warning: Citation `b2' on page 2 undefined on input line 106.
+
+
+LaTeX Warning: Citation `b1' on page 2 undefined on input line 107.
+
+
+LaTeX Warning: Citation `b3' on page 2 undefined on input line 156.
+
+
+LaTeX Warning: Citation `b3' on page 2 undefined on input line 196.
+
+
+LaTeX Warning: Citation `b1' on page 2 undefined on input line 219.
+
+
+LaTeX Warning: Citation `b7' on page 2 undefined on input line 219.
+
+LaTeX Font Info:    Trying to load font information for TS1+ptm on input line 2
+83.
+(C:\Users\gyang\AppData\Local\Programs\MiKTeX\tex/latex/psnfss\ts1ptm.fd
+File: ts1ptm.fd 2001/06/04 font definitions for TS1/ptm.
+)
+
+LaTeX Warning: Citation `b7' on page 2 undefined on input line 284.
+
+
+LaTeX Warning: Citation `b8' on page 2 undefined on input line 284.
+
+
+LaTeX Warning: Citation `b3' on page 2 undefined on input line 288.
+
+
+LaTeX Warning: Reference `fig:current_emf_misalignment' on page 1 undefined on 
+input line 293.
+
+[2]
+
+LaTeX Warning: Command \textdegree invalid in math mode on input line 311.
+
+
+LaTeX Warning: Command \textdegree invalid in math mode on input line 311.
+
+Missing character: There is no ° in font cmr10!
+
+LaTeX Warning: Citation `b1' on page 3 undefined on input line 315.
+
+
+LaTeX Warning: Citation `b7' on page 3 undefined on input line 315.
+
+<figures/hall_sensor_misaligned_physical.png, id=25, 326.72063pt x 319.1925pt>
 File: figures/hall_sensor_misaligned_physical.png Graphic file (type png)
 <use figures/hall_sensor_misaligned_physical.png>
 Package pdftex.def Info: figures/hall_sensor_misaligned_physical.png  used on i
-nput line 178.
+nput line 323.
 (pdftex.def)             Requested size: 151.20154pt x 147.71675pt.
- [2 <./figures/hall_sensor_misaligned_physical.png>]
+
+LaTeX Warning: Citation `b2' on page 3 undefined on input line 331.
+
 <figures/hall_sensor_comparison_paper.png, id=27, 619.8357pt x 292.6935pt>
 File: figures/hall_sensor_comparison_paper.png Graphic file (type png)
 <use figures/hall_sensor_comparison_paper.png>
 Package pdftex.def Info: figures/hall_sensor_comparison_paper.png  used on inpu
-t line 199.
+t line 339.
 (pdftex.def)             Requested size: 252.0pt x 118.99576pt.
- [3 <./figures/hall_sensor_comparison_paper.png>]
+
+LaTeX Warning: Citation `b1' on page 3 undefined on input line 377.
+
+[3 <./figures/hall_sensor_misaligned_physical.png> <./figures/hall_sensor_compa
+rison_paper.png>]
+
+LaTeX Warning: Citation `b1' on page 4 undefined on input line 382.
+
+
+LaTeX Warning: Citation `b1' on page 4 undefined on input line 393.
+
+
+LaTeX Warning: Citation `b2' on page 4 undefined on input line 399.
+
+[4]
+LaTeX Font Info:    Trying to load font information for OT1+pcr on input line 4
+71.
+ (C:\Users\gyang\AppData\Local\Programs\MiKTeX\tex/latex/psnfss\ot1pcr.fd
+File: ot1pcr.fd 2001/06/04 font definitions for OT1/pcr.
+)
+
+LaTeX Warning: Reference `subsec:inductive_lag' on page 5 undefined on input li
+ne 497.
+
+
+LaTeX Warning: Reference `eq:torque_mtpa_ideal' on page 5 undefined on input li
+ne 502.
+
+
+Overfull \hbox (24.37679pt too wide) detected at line 514
+[]\OML/cmm/m/it/10 i[]\OT1/cmr/m/n/10 (\OML/cmm/m/it/10 t\OT1/cmr/m/n/10 ) = []
+ []
+ []
+
+
+LaTeX Warning: Citation `b1' on page 5 undefined on input line 522.
+
+
+LaTeX Warning: Citation `b7' on page 5 undefined on input line 522.
+
+[5]
+
+LaTeX Warning: Command \textdegree invalid in math mode on input line 549.
+
+
+LaTeX Warning: Command \textdegree invalid in math mode on input line 549.
+
+Missing character: There is no ° in font cmr10!
+
+LaTeX Warning: Reference `subsec:inductive_lag' on page 6 undefined on input li
+ne 553.
+
+
+LaTeX Warning: Reference `eq:ids_calculation' on page 6 undefined on input line
+ 557.
+
+
+LaTeX Warning: Reference `fig:alignment' on page 1 undefined on input line 572.
+
+
 <C:/Users/gyang/.gemini/antigravity/brain/b08294ba-f3f3-4f5f-9c56-ce80970f78f6/
-uploaded_image_3_1765166842486.png, id=32, 678.535pt x 526.96875pt>
+uploaded_image_3_1765166842486.png, id=40, 678.535pt x 526.96875pt>
 File: C:/Users/gyang/.gemini/antigravity/brain/b08294ba-f3f3-4f5f-9c56-ce80970f
 78f6/uploaded_image_3_1765166842486.png Graphic file (type png)
 <use C:/Users/gyang/.gemini/antigravity/brain/b08294ba-f3f3-4f5f-9c56-ce80970f7
 8f6/uploaded_image_3_1765166842486.png>
 Package pdftex.def Info: C:/Users/gyang/.gemini/antigravity/brain/b08294ba-f3f3
 -4f5f-9c56-ce80970f78f6/uploaded_image_3_1765166842486.png  used on input line 
-334.
+575.
 (pdftex.def)             Requested size: 252.0pt x 195.70709pt.
-<figures/torque_comparison_paper.png, id=33, 586.3506pt x 369.5406pt>
+
+LaTeX Warning: Reference `fig:results_torque' on page 1 undefined on input line
+ 580.
+
+<figures/torque_comparison_paper.png, id=41, 586.3506pt x 369.5406pt>
 File: figures/torque_comparison_paper.png Graphic file (type png)
 <use figures/torque_comparison_paper.png>
 Package pdftex.def Info: figures/torque_comparison_paper.png  used on input lin
-e 342.
+e 583.
 (pdftex.def)             Requested size: 252.0pt x 158.8204pt.
- [4 <C:/Users/gyang/.gemini/antigravity/brain/b08294ba-f3f3-4f5f-9c56-ce80970f7
-8f6/uploaded_image_3_1765166842486.png> <./figures/torque_comparison_paper.png>
-]
-<figures/current_transient_compare.png, id=39, 722.7pt x 433.62pt>
+
+LaTeX Warning: Reference `fig:transient_compare' on page 1 undefined on input l
+ine 591.
+
+
+LaTeX Warning: Reference `fig:transient_stacked' on page 1 undefined on input l
+ine 591.
+
+<figures/current_transient_compare.png, id=42, 722.7pt x 433.62pt>
 File: figures/current_transient_compare.png Graphic file (type png)
 <use figures/current_transient_compare.png>
 Package pdftex.def Info: figures/current_transient_compare.png  used on input l
-ine 353.
+ine 594.
 (pdftex.def)             Requested size: 252.0pt x 151.20026pt.
-<figures/current_transient_stacked_inset.png, id=40, 1019.7297pt x 452.4102pt>
+<figures/current_transient_stacked_inset.png, id=43, 1019.7297pt x 452.4102pt>
 File: figures/current_transient_stacked_inset.png Graphic file (type png)
 <use figures/current_transient_stacked_inset.png>
 Package pdftex.def Info: figures/current_transient_stacked_inset.png  used on i
-nput line 359.
+nput line 600.
 (pdftex.def)             Requested size: 252.0pt x 111.79756pt.
-<figures/speed_step_placeholder.png, id=41, 349.7868pt x 251.4996pt>
+
+LaTeX Warning: Reference `fig:speed_step' on page 1 undefined on input line 605
+.
+
+[6 <C:/Users/gyang/.gemini/antigravity/brain/b08294ba-f3f3-4f5f-9c56-ce80970f78
+f6/uploaded_image_3_1765166842486.png>]
+<figures/speed_step_placeholder.png, id=48, 349.7868pt x 251.4996pt>
 File: figures/speed_step_placeholder.png Graphic file (type png)
 <use figures/speed_step_placeholder.png>
 Package pdftex.def Info: figures/speed_step_placeholder.png  used on input line
- 367.
+ 608.
 (pdftex.def)             Requested size: 252.0pt x 181.19086pt.
-<figures/torque_step_placeholder.png, id=42, 349.7868pt x 251.4996pt>
+
+
+LaTeX Warning: Reference `fig:load_step' on page 1 undefined on input line 613.
+
+
+<figures/torque_step_placeholder.png, id=49, 349.7868pt x 251.4996pt>
 File: figures/torque_step_placeholder.png Graphic file (type png)
 <use figures/torque_step_placeholder.png>
 Package pdftex.def Info: figures/torque_step_placeholder.png  used on input lin
-e 375.
+e 616.
 (pdftex.def)             Requested size: 252.0pt x 181.19086pt.
- [5 <./figures/current_transient_compare.png> <./figures/current_transient_stac
-ked_inset.png> <./figures/speed_step_placeholder.png> <./figures/torque_step_pl
-aceholder.png>]
+[7 <./figures/torque_comparison_paper.png> <./figures/current_transient_compare
+.png> <./figures/current_transient_stacked_inset.png> <./figures/speed_step_pla
+ceholder.png> <./figures/torque_step_placeholder.png>]
+
+LaTeX Warning: Reference `tab:motor_params' on page 8 undefined on input line 6
+26.
+
 
 ** Conference Paper **
 Before submitting the final camera ready copy, remember to:
@@ -846,43 +1034,52 @@ Before submitting the final camera ready copy, remember to:
  uses only Type 1 fonts and that every step in the generation
  process uses the appropriate paper size.
 
-[6
+[8
 
 ] (IEEE-conference-template-062824.aux)
  ***********
 LaTeX2e <2025-11-01>
 L3 programming layer <2025-11-06>
  ***********
+
+
+LaTeX Warning: There were undefined references.
+
+
+LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
+
  ) 
 Here is how much of TeX's memory you used:
- 22218 strings out of 467871
- 493780 string characters out of 5418376
- 833592 words of memory out of 5000000
- 50800 multiletter control sequences out of 15000+600000
- 666756 words of font info for 116 fonts, out of 8000000 for 9000
+ 22122 strings out of 467871
+ 491599 string characters out of 5418376
+ 836266 words of memory out of 5000000
+ 50694 multiletter control sequences out of 15000+600000
+ 668692 words of font info for 120 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 84i,11n,94p,1073b,850s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 84i,11n,94p,1073b,848s stack positions out of 10000i,1000n,20000p,200000b,200000s
 <C:/Users/gyang/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/
 cmbx10.pfb><C:/Users/gyang/AppData/Local/Programs/MiKTeX/fonts/type1/public/ams
 fonts/cm/cmex10.pfb><C:/Users/gyang/AppData/Local/Programs/MiKTeX/fonts/type1/p
 ublic/amsfonts/cm/cmmi10.pfb><C:/Users/gyang/AppData/Local/Programs/MiKTeX/font
-s/type1/public/amsfonts/cm/cmmi6.pfb><C:/Users/gyang/AppData/Local/Programs/MiK
-TeX/fonts/type1/public/amsfonts/cm/cmmi7.pfb><C:/Users/gyang/AppData/Local/Prog
-rams/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi8.pfb><C:/Users/gyang/AppData/Lo
-cal/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr10.pfb><C:/Users/gyang/Ap
-pData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr7.pfb><C:/Users/g
-yang/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr8.pfb><C:/
-Users/gyang/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy10
-.pfb><C:/Users/gyang/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/
-cm/cmsy7.pfb><C:/Users/gyang/AppData/Local/Programs/MiKTeX/fonts/type1/urw/time
-s/utmb8a.pfb><C:/Users/gyang/AppData/Local/Programs/MiKTeX/fonts/type1/urw/time
-s/utmbi8a.pfb><C:/Users/gyang/AppData/Local/Programs/MiKTeX/fonts/type1/urw/tim
-es/utmr8a.pfb><C:/Users/gyang/AppData/Local/Programs/MiKTeX/fonts/type1/urw/tim
-es/utmri8a.pfb>
-Output written on IEEE-conference-template-062824.pdf (6 pages, 1824090 bytes).
+s/type1/public/amsfonts/cm/cmmi5.pfb><C:/Users/gyang/AppData/Local/Programs/MiK
+TeX/fonts/type1/public/amsfonts/cm/cmmi6.pfb><C:/Users/gyang/AppData/Local/Prog
+rams/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi7.pfb><C:/Users/gyang/AppData/Lo
+cal/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi8.pfb><C:/Users/gyang/Ap
+pData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr10.pfb><C:/Users/
+gyang/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr7.pfb><C:
+/Users/gyang/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr8.
+pfb><C:/Users/gyang/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/c
+m/cmsy10.pfb><C:/Users/gyang/AppData/Local/Programs/MiKTeX/fonts/type1/public/a
+msfonts/cm/cmsy7.pfb><C:/Users/gyang/AppData/Local/Programs/MiKTeX/fonts/type1/
+urw/courier/ucrr8a.pfb><C:/Users/gyang/AppData/Local/Programs/MiKTeX/fonts/type
+1/urw/times/utmb8a.pfb><C:/Users/gyang/AppData/Local/Programs/MiKTeX/fonts/type
+1/urw/times/utmbi8a.pfb><C:/Users/gyang/AppData/Local/Programs/MiKTeX/fonts/typ
+e1/urw/times/utmr8a.pfb><C:/Users/gyang/AppData/Local/Programs/MiKTeX/fonts/typ
+e1/urw/times/utmri8a.pfb>
+Output written on IEEE-conference-template-062824.pdf (8 pages, 1859855 bytes).
 
 PDF statistics:
- 118 PDF objects out of 1000 (max. 8388607)
+ 136 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)
  58 words of extra memory for PDF output out of 10000 (max. 10000000)
 
