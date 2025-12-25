@@ -396,7 +396,9 @@ For the MTPA controller, this lag is particularly problematic. The controller re
 
 \subsection{Proposed LUT-Based Calibration Strategy}
 
-To eliminate the runtime delay while preserving correction accuracy, this work employs a two-stage Lookup Table (LUT) based approach \cite{b2}. The key insight is that Hall sensor misalignment is a fixed geometric error that does not change during operation. Therefore, the correction values can be identified once during an offline calibration phase and then applied instantaneously during runtime without any filtering.
+To eliminate the delay caused by memories while preserving correction accuracy, this work employs a two-stage Lookup Table (LUT) based approach \cite{b2}. 
+The key idea is that Hall sensor misalignment is a fixed geometric error that does not change during operation. 
+Therefore, the correction values can be identified once during a calibration phase and then applied instantaneously during runtime without any filtering.
 
 \begin{figure}[htbp]
     \centering
@@ -405,165 +407,131 @@ To eliminate the runtime delay while preserving correction accuracy, this work e
     \label{fig:control_flow}
 \end{figure}
 
-\subsubsection{Calibration Phase: Error Identification}
+During the calibration phase, first the motor is driven to a stable steady-state speed. 
+Then a filter can be chosen, for this study I used a high-order averaging filter such as the 6-step filter from \eqref{eq:tau_a6}. This filter has significant delay
+thus it does not have a good transient response, as such it is a good candidate to be compared against the proposed LUT method.
+The chosen filter is applied to balance the measured Hall intervals and remove the effects of misalignment. 
+The filtered interval $\tau'(n)$ represents what the commutation interval duration would be if the Hall sensors were ideally positioned.
 
-During the calibration phase, the motor is driven to a stable steady-state speed. A high-order averaging filter, such as the 6-step filter from \eqref{eq:tau_a6}, is temporarily engaged to balance the measured Hall intervals and remove the effects of misalignment. The filtered interval $\tau'(n)$ represents what the interval duration would be if the Hall sensors were ideally positioned.
-
-For each of the six Hall states $S \in \{1, 2, 3, 4, 5, 6\}$, the time error $\delta_t[S]$ is computed as the difference between the measured interval $\tau_{meas}[S]$ and the filtered interval $\tau'[S]$:
+For each of the six Hall states $S \in \{1, 2, 3, 4, 5, 6\}$, the filter would learn the specific time duration for each sector at that specific reference speed, $\bar{\tau}[S]|_{\omega = \omega_{ref}}$. 
+Furthermore, we can get a speed estimate $\hat{\omega}_r$ at that operating point using the filtered intervals. Where the speed estimate is computed as
 \begin{equation}
-    \delta_t[S] = \tau_{meas}[S] - \tau'[S]
-    \label{eq:time_error}
+    \hat{\omega}_r[n] = \frac{\pi/3}{t[n] - t[n - 1] }
+    \label{eq:speed_estimate}
 \end{equation}
+Where $t[n]$ is the timestamp of the current Hall transition and $t[n - 1]$ is the timestamp of the previous Hall transition.
 
-This time error is then converted into an angular correction $\Delta\phi_{LUT}[S]$ using the estimated electrical speed $\hat{\omega}_r$ at the calibration operating point:
+The misalignment angle in each state can then be calculated with.
 \begin{equation}
-    \Delta\phi_{LUT}[S] = \hat{\omega}_r \cdot \delta_t[S]
+    \Delta\phi_{LUT}[S] = \hat{\omega}_r[n] \cdot \bar{\tau}[S]|_{\omega = \omega_{ref}}
     \label{eq:lut_angle}
 \end{equation}
 
-The angular corrections for all six Hall states are recorded and stored in a Lookup Table. Since these corrections represent geometric errors in sensor placement, they remain valid across all operating conditions and speeds. The calibration only needs to be performed once after motor assembly or can be repeated if the Hall sensor PCB is replaced.
+The angular corrections for all six Hall states are recorded and stored in a Lookup Table. 
+Note that these corrections represent geometric errors in sensor placement, and thus they remain valid across all operating conditions and speeds. 
+The calibration only needs to be performed once after motor assembly or can be repeated if the Hall sensor PCB is replaced. 
+For subsequent operation, the controller can apply these pre-computed corrections during startup and directly without any filtering, eliminating runtime delay as shown in \Cref{fig:control_flow}.
 
-\subsubsection{Runtime Phase: Feed-Forward Correction}
+\subsection{Runtime Phase: Feed-Forward Correction}
 
-During normal runtime operation, the averaging filters are completely bypassed. When a Hall transition occurs for state $S$, the controller retrieves the pre-stored correction angle $\Delta\phi_{LUT}[S]$ from the Lookup Table. The corrected time interval for the next switching sector is calculated as
+During normal runtime operation, the averaging filters are completely bypassed. When a Hall transition occurs for state $S$, the controller retrieves the pre-stored correction angle $\Delta\phi_{LUT}[S]$ from the Lookup Table. 
+Then the speed estimate $\hat{\omega}_r[n]$ is computed using \eqref{eq:speed_estimate} with the current measured interval. The corrected time interval for the next switching sector is then calculated as
 \begin{equation}
-    \tau_{corr}(n) = \frac{\pi/3 - \Delta\phi_{LUT}[S]}{\hat{\omega}_r}
+    \tau_{corr}(n) = \frac{\Delta\phi_{LUT}[S]}{\hat{\omega}_r[n]}
     \label{eq:tau_lut}
 \end{equation}
-where $\pi/3$ represents the ideal 60° electrical duration for each sector in 120° commutation. The next commutation instant $t_{out}(n)$ is then scheduled as
+
+The next commutation instant $t_{out}(n)$ is then scheduled as
 \begin{equation}
     t_{out}(n) = t_{in}(n) + \tau_{corr}(n)
     \label{eq:t_out}
 \end{equation}
 where $t_{in}(n)$ is the time of the current Hall transition.
 
-This feed-forward correction approach eliminates the Hall sensor misalignment error without introducing any phase lag. The rotor speed estimation $\hat{\omega}_r$ remains accurate during transients because it is based on corrected intervals rather than filtered intervals with memory. Consequently, the rotor position estimate $\hat{\theta}_r$ tracks the true position closely, providing the MTPA controller with accurate feedback for calculating $\bar{i}_{ds}$ and adjusting the firing angle compensation. The LUT-based method thus preserves the system's dynamic response capability while achieving the same steady-state correction accuracy as high-order averaging filters.
-
-\subsection{Calibration Phase: Sector Duration Identification}
-\label{subsec:calibration}
-During the calibration phase, the motor is driven to a stable reference speed $\omega_{ref}$. A high-order averaging filter, such as the 6-step filter from \eqref{eq:tau_a6}, is temporarily engaged. While the raw Hall intervals $\tau_{meas}(n)$ exhibit jitter due to misalignment, the filtered output $\bar{\tau}(n)$ converges to the ideal sector duration required for smooth operation.
-
-For each of the six Hall states $S \in \{0, \dots, 5\}$, the algorithm learns the specific time duration required to traverse that sector. The corrected sector time $\tau_{LUT}[S]$ is captured from the stable filter output:
-\begin{equation}
-    \tau_{LUT}[S] = \bar{\tau}[S]|_{\omega = \omega_{ref}}
-    \label{eq:calib_time}
-\end{equation}
-Unlike angular correction methods, this approach stores the direct time intervals in the Lookup Table. This minimizes runtime computational complexity by eliminating the need for angle-to-time conversion steps (division) during the critical commutation interrupt. This method is particularly effective for applications operating at a consistent nominal speed or where the LUT is scaled dynamically.
-
-\subsection{Runtime Phase: Direct Feed-Forward Correction}
-\label{subsec:runtime}
-During normal runtime operation, the computational overhead is minimized. The complex averaging filters are bypassed. Instead, when the controller enters a new sector $S$, it immediately retrieves the pre-stored valid duration from the Lookup Table.
-
-The corrected commutation interval $\tau_{corr}(n)$ is obtained via a direct memory access:
-\begin{equation}
-    \tau_{corr}(n) = \tau_{LUT}[S]
-    \label{eq:runtime_lookup}
-\end{equation}
-The next commutation instant $t_{out}(n)$ is then scheduled relative to the current timer value $t_{in}(n)$:
-\begin{equation}
-    t_{out}(n) = t_{in}(n) + \tau_{corr}(n)
-    \label{eq:t_out}
-\end{equation}
-
-By utilizing the stored time values directly, the system avoids the numerical latency associated with real-time division operations. This allows the commutation logic to execute within the minimal number of clock cycles, ensuring that the interrupt service routine (ISR) completes rapidly. The estimated rotor speed and position derived from these corrected intervals allow the MTPA controller to regulate the $d$-axis current without the phase lag introduced by recursive filtering.
-
-\subsection{Implementation Implementation}
-The implementation of this strategy is shown in the pseudo-code below. The function \texttt{update\_tau} is called upon every Hall state change.
-
-% \begin{algorithm}
-% \caption{Runtime Correction Logic}
-% \label{alg:runtime_logic}
-% \begin{algorithmic}[1]
-% \State \textbf{Input:} Timer $t$, State $S$, Mode $use\_LUT$
-% \State $idx \leftarrow \text{mod}(S, 6)$
-% \If{$use\_LUT$}
-%     \State $\tau_{corr} \leftarrow \tau_{LUT}[idx]$ \Comment{Direct Lookup}
-% \Else
-%     \State $\tau_{corr} \leftarrow \text{Filter}(\tau_{hist})$ \Comment{Calibration Mode}
-% \EndIf
-% \State $t_{next} \leftarrow t + \tau_{corr}$
-% \State \textbf{Schedule Interrupt} at $t_{next}$
-% \end{algorithmic}
-% \end{algorithm}
+This feed-forward correction approach eliminates the phase lag from filter approach while correcting the Hall sensor misalignment error. 
+The rotor speed estimation $\hat{\omega}_r[n]$ remains 
+accurate during transients because it is based on corrected intervals rather than filtered intervals with memory. 
+Consequently, the rotor position estimate $\hat{\theta}_r$ tracks the true position closely, 
+providing the MTPA controller with accurate feedback for calculating $\bar{i}_{ds}$ and adjusting the firing angle compensation. 
+The LUT-based method thus preserves the system's dynamic response capability while achieving the same 
+steady-state correction accuracy as high-order averaging filters.
 
 \subsection{Implementation Considerations}
 
-The LUT requires minimal memory, storing only six angular correction values (one per Hall state). On a typical microcontroller, this consumes less than 24 bytes. The runtime computation in \eqref{eq:tau_lut} involves one table lookup, one subtraction, and one division, which can be executed within microseconds on modern DSPs. 
+The LUT requires minimal memory, storing only six angular correction values (one per Hall state). On a typical microcontroller, this consumes less than 24 bytes. 
+The runtime computation in \eqref{eq:tau_lut} involves one table lookup, one subtraction, and one division, which can be executed within microseconds on modern DSPs. 
 
-The calibration phase can be automated as part of the motor commissioning process. The motor is accelerated to a moderate speed (typically 20-30\% of rated speed to avoid excessive vibration from uncorrected Hall signals), and correction values are identified over several electrical cycles to ensure statistical reliability. Once calibrated, the LUT values are stored in non-volatile memory and loaded at startup for all subsequent operations.
+The calibration phase can be automated as part of the motor commissioning process. The motor is accelerated to a moderate speed (typically 20-30\% of rated 
+speed to avoid excessive vibration from uncorrected Hall signals), and correction values are identified over several electrical cycles 
+to ensure statistical reliability. Once calibrated, the LUT values are stored in non-volatile memory and loaded at startup for all subsequent operations.
+
+Another advantage of LUT is that it can be used for more accurate speed estimation. 
+Since we know the angles between each commutation sector, we can use this to get a more accurate speed for each sector.
+
+
 \section{MTPA Control via Dynamic Advance Angle Compensation}
 \label{sec:mtpa_control}
 
-With the Hall sensor timing corrected by the LUT-based strategy from Section \ref{sec:hall_filter}, the control system can now reliably implement Maximum Torque per Ampere (MTPA) operation. As discussed in Section \ref{subsec:inductive_lag}, motors with large stator inductance experience phase lag between the current and back-EMF, causing deviation from the MTPA condition even with the standard 30° advance angle. This section presents a PI-based controller that dynamically adjusts the firing angle to compensate for this inductive lag and recover MTPA operation across varying speed and load conditions.
+With the Hall sensor timing corrected by the LUT-based strategy from Section \ref{sec:hall_filter}, the control system can now implement Maximum Torque per Ampere (MTPA) operation reliably. As discussed in Section \ref{subsec:inductive_lag}, motors with large stator inductance experience phase lag between the phase current and back-EMF. The standard 30° advance angle in COM is insufficient to compensate for this lag, which varies with operating conditions. This section presents a PI-based controller that dynamically adjusts the firing angle to maintain the MTPA condition across varying speed and load.
 
-\subsection{MTPA Condition and the d-Axis Current Metric}
+\subsection{d-Axis Current as the MTPA Metric}
 \label{subsec:d_axis_metric}
 
-Recall from \eqref{eq:torque_mtpa_ideal} that for a surface-mounted PMSM, electromagnetic torque is maximized when all stator current aligns with the q-axis, which requires $i_d = 0$. From the voltage equation \eqref{eq:vd}, when $i_d = 0$ is maintained, the d-axis voltage primarily consists of the rotational coupling term:
-\begin{equation}
-    v_d = L_s \frac{di_d}{dt} - \omega_r L_s i_q
-    \label{eq:vd_mtpa}
-\end{equation}
+Recall from \eqref{eq:torque_mtpa_ideal} that for a surface-mounted PMSM, maximum torque per ampere is achieved when $i_d = 0$, meaning all stator current is aligned with the q-axis back-EMF. Therefore, the control objective is to maintain the time-averaged d-axis current at zero: $\bar{i}_d = 0$.
 
-In steady state with $\frac{di_d}{dt} \approx 0$, this implies $v_d \approx -\omega_r L_s i_q$, which is automatically satisfied when the commutation timing aligns the current with the back-EMF. Therefore, the control objective is to drive the average d-axis current to zero: $\bar{i}_d = 0$.
-
-Using the rotor position estimate $\hat{\theta}_r$ obtained from the corrected Hall signals, the instantaneous d-axis current is calculated via the Park transformation \eqref{eq:park}:
+Using the corrected rotor position estimate $\hat{\theta}_r$ from the LUT-based Hall correction, the instantaneous d-axis current is calculated via the Park transformation \eqref{eq:park}:
 \begin{equation}
     i_{ds}(t) = \frac{2}{3}\left[ i_{as}\sin(\hat{\theta}_r) + i_{bs}\sin\left(\hat{\theta}_r - \frac{2\pi}{3}\right) + i_{cs}\sin\left(\hat{\theta}_r + \frac{2\pi}{3}\right) \right]
     \label{eq:ids_calculation}
 \end{equation}
 
-Due to the six-step switching nature and the discontinuous phase currents in 120° commutation, $i_{ds}(t)$ contains significant high-frequency harmonics. To obtain a stable feedback signal for the controller, the current is averaged over each switching interval $\Delta t_n$:
+The six-step commutation produces discontinuous phase currents, causing $i_{ds}(t)$ to contain high-frequency harmonics. To obtain a stable control signal, $i_{ds}(t)$ is averaged over each switching interval \cite{b1}:
 \begin{equation}
     \bar{i}_{ds}[n] = \frac{1}{\Delta t_n} \int_{t_n}^{t_n + \Delta t_n} i_{ds}(t) \, dt
     \label{eq:ids_average}
 \end{equation}
+where $\Delta t_n$ is the duration of the $n$-th conduction interval. In practice, this averaging can be implemented by accumulating samples of $i_{ds}(t)$ over each interval.
 
-This time-averaged value $\bar{i}_{ds}[n]$ represents the DC component of the d-axis current over one conduction interval. When $\bar{i}_{ds} = 0$, the fundamental component of the phase current is aligned with the back-EMF, achieving the MTPA condition \cite{b1, b7}.
+When $\bar{i}_{ds} = 0$, the fundamental component of the phase current is aligned with the back-EMF, achieving MTPA operation \cite{b1, b7}.
 
-\subsection{PI Controller Design for Advance Angle Compensation}
+\subsection{PI Controller for Advance Angle Compensation}
 \label{subsec:pi_compensation}
 
-The MTPA controller uses a Proportional-Integral (PI) structure to drive $\bar{i}_{ds}$ to zero by adjusting the advance firing angle. The control error is defined as:
+A Proportional-Integral (PI) controller drives $\bar{i}_{ds}$ to zero by compensating the advance firing angle. The control error is simply the negative of the averaged d-axis current:
 \begin{equation}
-    e[n] = 0 - \bar{i}_{ds}[n] = -\bar{i}_{ds}[n]
+    e[n] = -\bar{i}_{ds}[n]
     \label{eq:control_error}
 \end{equation}
 
-The PI controller outputs a compensation angle $\Delta\phi_v[n]$ according to:
+The PI controller outputs a compensation angle $\Delta\phi_v[n]$:
 \begin{equation}
     \Delta \phi_v[n] = K_p e[n] + K_i \sum_{j=0}^{n} e[j]
     \label{eq:pi_controller}
 \end{equation}
-where $K_p$ and $K_i$ are the proportional and integral gains, respectively. The proportional term provides fast response to changes in $\bar{i}_{ds}$, while the integral term eliminates steady-state error and ensures $\bar{i}_{ds}$ converges to zero even in the presence of modeling uncertainties.
+where $K_p$ and $K_i$ are the proportional and integral gains. The proportional term provides fast response, while the integral term eliminates steady-state error.
 
 \begin{figure}[htbp]
     \centering
     % \includegraphics[width=0.9\columnwidth]{mtpa_control_diagram.png}
-    \caption{Block diagram of the MTPA control loop. The corrected Hall signals provide accurate $\hat{\theta}_r$ for computing $i_{ds}$ from measured phase currents. The PI controller drives $\bar{i}_{ds}$ to zero by adjusting the compensation angle $\Delta\phi_v$.}
+    \caption{Flowchart of the MTPA PI controller. The corrected Hall signals provide accurate $\hat{\theta}_r$ for computing $i_{ds}$ from phase currents. The average $\bar{i}_{ds}$ is fed to the PI controller, which outputs compensation angle $\Delta\phi_v$ to maintain MTPA.}
     \label{fig:mtpa_diagram}
 \end{figure}
 
-The total firing angle applied to the commutation logic combines the standard COM advance with the dynamic compensation:
+The total firing angle combines the COM advance with the dynamic compensation:
 \begin{equation}
     \phi'_v[n] = 30° + \Delta \phi_v[n]
     \label{eq:total_firing_angle}
 \end{equation}
 
-This corrected angle $\phi'_v$ shifts the commutation instants earlier or later relative to the Hall transitions, compensating for the inductive phase lag. As discussed in Section \ref{subsec:inductive_lag}, the required compensation depends on the operating point. At higher speeds, the rotational coupling terms $\omega_r L_s i_q$ in \eqref{eq:vd} become larger, requiring greater advance. Similarly, at higher torque (higher $i_q$), the commutation transients take longer, also requiring more advance. The PI controller automatically adjusts $\Delta\phi_v$ to the appropriate value for each operating condition, maximizing the torque-per-ampere ratio from \eqref{eq:tpa_definition}.
+This corrected angle $\phi'_v$ adjusts when the VSI commutates relative to Hall transitions. At higher speeds, the inductive lag increases due to the rotational coupling term $\omega_r L_s i_q$ in \eqref{eq:vd}, requiring larger $\Delta\phi_v$. Similarly, at higher torque (larger $i_q$), the current rise time during commutation is longer, also requiring more advance. The PI controller automatically finds the optimal $\Delta\phi_v$ for each operating point, maximizing the torque-per-ampere ratio.
 
-\subsection{Integration with LUT-Based Hall Correction}
+Together with the LUT-based Hall correction from Section \ref{sec:hall_filter}, this combined control architecture \cite{b1} enables BLDC motors with Hall sensor misalignment and large stator inductance to achieve near-optimal MTPA operation. The commutation timing is influenced by both corrections:
+\begin{equation}
+    t_{out}(n) = t_{in}(n) + \tau_{corr}(n) + \frac{\Delta\phi_v[n]}{\hat{\omega}_r[n]}
+    \label{eq:combined_timing}
+\end{equation}
+where the first correction term $\tau_{corr}(n)$ from \eqref{eq:tau_lut} balances the Hall intervals, and the second term applies the MTPA advance compensation. The system dynamically adjusts both corrections in real time to maintain optimal performance under transients.
 
-The MTPA controller's performance depends critically on the accuracy of the rotor position estimate $\hat{\theta}_r$ used in \eqref{eq:ids_calculation}. If $\hat{\theta}_r$ contains errors or oscillations due to Hall sensor misalignment, the calculated $\bar{i}_{ds}$ will oscillate even when the motor is operating at the true MTPA condition. This causes the PI controller to chase measurement artifacts rather than actual control errors, leading to instability in the firing angle $\phi'_v$.
-
-The LUT-based Hall correction from Section \ref{sec:hall_filter} addresses this issue by providing balanced switching intervals and accurate position estimates without any filter delay. The two control strategies work synergistically:
-
-\begin{itemize}
-    \item The \textbf{LUT correction} eliminates Hall sensor misalignment errors, providing stable and accurate $\hat{\theta}_r$ for the Park transformation
-    \item The \textbf{MTPA PI controller} compensates for inductive phase lag by adjusting $\Delta\phi_v$ based on the accurately calculated $\bar{i}_{ds}$
-\end{itemize}
-
-Together, these methods enable BLDC motors with both Hall sensor misalignment and large stator inductance to achieve near-optimal MTPA operation with fast transient response. The combined control architecture is implemented efficiently on a microcontroller, as detailed in Chapter 3.
 \section{Detailed Machine Simulations}
 \label{sec:simulation}
 The proposed combined control strategy was validated using a high-fidelity BLDC motor model.
