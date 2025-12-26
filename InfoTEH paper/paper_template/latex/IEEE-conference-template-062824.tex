@@ -12,6 +12,8 @@
 \usepackage{tikz}
 % \usepackage{algorithm}
 % \usepackage{algpseudocode}
+\numberwithin{equation}{section}
+\renewcommand{\theequation}{\arabic{section}.\arabic{equation}}
 
 \def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
     T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
@@ -96,9 +98,9 @@ Furthermore, manufacturing imperfections cause the Hall sensors to deviate from 
 spacing, resulting in asymmetric commutation timing as shown in \Cref{fig:hall_sensor_comparison}. This leads to imbalanced currents across phases, elevated 
 torque oscillations, and overall degradation of motor performance \cite{b6, b7, b8, b9}. Signal 
 conditioning techniques, including moving average filters, have been applied to Hall sensor 
-outputs \cite{b9, b10}, yet these introduce timing delays that further compromise MTPA alignment. 
+outputs \cite{b6, b9}, yet these introduce timing delays that further compromise MTPA alignment. 
 In motors with large winding inductance, proportional-integral controllers have been developed to 
-dynamically adjust the commutation advance angle \cite{b7, b11, b12}. However, these compensation 
+dynamically adjust the commutation advance angle \cite{b10, b11, b12}. However, these compensation 
 strategies rely on accurate rotor position estimation, which becomes unreliable when the Hall 
 sensors themselves are misaligned.
 
@@ -268,7 +270,7 @@ maximum torque output for a given current magnitude.
 %  \end{figure}
 
 \subsection{Inductive Phase Lag and Angle Compensation}
-
+\label{subsec:inductive_lag}
 In the ideal case where stator inductance is negligible, the voltage equations \eqref{eq:vq} and \eqref{eq:vd} simplify to their resistive forms:
 \begin{equation}
 v_q \approx R_s i_q + \omega_r \psi_m, \quad v_d \approx R_s i_d
@@ -289,8 +291,9 @@ However, for motors with non-negligible stator inductance, the inductive terms i
 which describes how the phase current must transition from zero to its conducting value for each commutation.
 
 Additionally, the rotational coupling terms $\omega_r L_s i_d$ in \eqref{eq:vq} and $\omega_r L_s i_q$ in \eqref{eq:vd} 
-scale proportionally with rotor speed. At higher speeds, these terms become significant relative to the resistive drops, creating cross-axis voltage coupling that further delays the current response. The combined effect of both the transient and rotational inductive terms causes the fundamental component of the phase current to lag behind the back-EMF $e_{qs} = \omega_r \psi_m$ by an angle $\phi_v$, 
-as illustrated in \Cref{fig:current_emf_misalignment}.
+scale proportionally with rotor speed. At higher speeds, these terms become significant relative to the resistive drops, creating cross-axis voltage coupling that further delays the current response. 
+The combined effect of both the transient and rotational inductive terms causes the fundamental component of the phase current to lag behind the back-EMF $e_{qs} = \omega_r \psi_m$ by an angle $\phi_v$, 
+as illustrated in \Cref{fig:hall_sensor_comparison}. %%% FIX THIS, NEED NEW IMAGE
 % \begin{figure}[htbp]
 % \centerline{\includegraphics[width=0.8\columnwidth]{figures/current_emf_misalignment.png}}
 % \caption{Phase current fundamental component lags back-EMF due to stator inductance, causing angle $\phi_v$ that increases with rotor speed $\omega_r$.}
@@ -461,43 +464,60 @@ steady-state correction accuracy as high-order averaging filters.
 The LUT requires minimal memory, storing only six angular correction values (one per Hall state). On a typical microcontroller, this consumes less than 24 bytes. 
 The runtime computation in \eqref{eq:tau_lut} involves one table lookup, one subtraction, and one division, which can be executed within microseconds on modern DSPs. 
 
-The calibration phase can be automated as part of the motor commissioning process. The motor is accelerated to a moderate speed (typically 20-30\% of rated 
-speed to avoid excessive vibration from uncorrected Hall signals), and correction values are identified over several electrical cycles 
-to ensure statistical reliability. Once calibrated, the LUT values are stored in non-volatile memory and loaded at startup for all subsequent operations.
+The calibration phase can be automated as part of the motor commissioning process. The motor is accelerated to a moderate speed, 
+and correction values are identified over several electrical cycles 
+to ensure statistical reliability. Once calibrated, the LUT values are stored in non-volatile memory and 
+loaded at startup for all subsequent operations.
 
 Another advantage of LUT is that it can be used for more accurate speed estimation. 
 Since we know the angles between each commutation sector, we can use this to get a more accurate speed for each sector.
 
 
-\section{MTPA Control via Dynamic Advance Angle Compensation}
+\section{MTPA using PI Controller for Dynamic Advance Angle Compensation}
 \label{sec:mtpa_control}
 
-With the Hall sensor timing corrected by the LUT-based strategy from Section \ref{sec:hall_filter}, the control system can now implement Maximum Torque per Ampere (MTPA) operation reliably. As discussed in Section \ref{subsec:inductive_lag}, motors with large stator inductance experience phase lag between the phase current and back-EMF. The standard 30° advance angle in COM is insufficient to compensate for this lag, which varies with operating conditions. This section presents a PI-based controller that dynamically adjusts the firing angle to maintain the MTPA condition across varying speed and load.
+With the Hall sensor timing corrected by the LUT-based strategy from Section \ref{sec:hall_filter}, 
+the control system can now implement Maximum Torque per Ampere (MTPA) operation reliably. 
+As discussed in Section \ref{subsec:inductive_lag}, motors with large 
+stator inductance experience phase lag between the phase current and back-EMF. 
+The standard 30° advance angle in COM needs another angle correction term to compensate for this lag,
+\begin{equation}
+    \phi'_{v} = 30° + \Delta\phi_v
+    \label{eq:advance_angle}
+\end{equation} 
+Since $\Delta\phi_v$ depends on the operating conditions, this section presents a PI-based controller 
+that dynamically adjusts the firing angle to maintain the MTPA condition across varying speed and load.
 
-\subsection{d-Axis Current as the MTPA Metric}
+\subsection{d-Axis Current Regulation for MTPA}
 \label{subsec:d_axis_metric}
 
-Recall from \eqref{eq:torque_mtpa_ideal} that for a surface-mounted PMSM, maximum torque per ampere is achieved when $i_d = 0$, meaning all stator current is aligned with the q-axis back-EMF. Therefore, the control objective is to maintain the time-averaged d-axis current at zero: $\bar{i}_d = 0$.
+Recall from \eqref{eq:torque_simplified} that 
+maximum torque per ampere is achieved when $i_d = 0$. Therefore, the control objective for MTPA is 
+to maintain the time-averaged d-axis current at zero: $\bar{i}_d = 0$ \cite{b10}.
 
-Using the corrected rotor position estimate $\hat{\theta}_r$ from the LUT-based Hall correction, the instantaneous d-axis current is calculated via the Park transformation \eqref{eq:park}:
+Using the corrected rotor position estimate $\hat{\theta}_r$ from the LUT-based Hall correction, the instantaneous stator currents are transformed into the synchronous 
+reference frame. The $d$-axis current $i_{ds}$ is extracted via the Park transformation matrix $\mathbf{K}_s^r$ from \eqref{eq:park}:
+
 \begin{equation}
-    i_{ds}(t) = \frac{2}{3}\left[ i_{as}\sin(\hat{\theta}_r) + i_{bs}\sin\left(\hat{\theta}_r - \frac{2\pi}{3}\right) + i_{cs}\sin\left(\hat{\theta}_r + \frac{2\pi}{3}\right) \right]
-    \label{eq:ids_calculation}
+    \mathbf{i}_{dqs} = \mathbf{K}_s^r \cdot \mathbf{i}_{abcs}
+    \label{eq:park_vector}
 \end{equation}
 
-The six-step commutation produces discontinuous phase currents, causing $i_{ds}(t)$ to contain high-frequency harmonics. To obtain a stable control signal, $i_{ds}(t)$ is averaged over each switching interval \cite{b1}:
+The six-step commutation produces discontinuous phase currents, causing $i_{ds}(t)$ to contain high-frequency harmonics. 
+To obtain a stable control signal, $i_{ds}(t)$ is averaged over one electrical cycle \cite{b1}:
 \begin{equation}
-    \bar{i}_{ds}[n] = \frac{1}{\Delta t_n} \int_{t_n}^{t_n + \Delta t_n} i_{ds}(t) \, dt
+    \bar{i}_{ds}[n] = \frac{1}{T} \int_{t_n}^{t_n + T} i_{ds}(t) \, dt
     \label{eq:ids_average}
 \end{equation}
-where $\Delta t_n$ is the duration of the $n$-th conduction interval. In practice, this averaging can be implemented by accumulating samples of $i_{ds}(t)$ over each interval.
-
+where $T$ is the duration of one electrical cycle and $t_n$ is the starting time of the $n$-th electrical cycle. 
+Then a PI Controller 
 When $\bar{i}_{ds} = 0$, the fundamental component of the phase current is aligned with the back-EMF, achieving MTPA operation \cite{b1, b7}.
 
-\subsection{PI Controller for Advance Angle Compensation}
+\subsection{PI Controller for Dynamic Angle Compensation}
 \label{subsec:pi_compensation}
 
-A Proportional-Integral (PI) controller drives $\bar{i}_{ds}$ to zero by compensating the advance firing angle. The control error is simply the negative of the averaged d-axis current:
+A Proportional-Integral (PI) controller drives $\bar{i}_{ds}$ to zero by compensating the advance firing angle. 
+The control error is simply the negative of the averaged d-axis current:
 \begin{equation}
     e[n] = -\bar{i}_{ds}[n]
     \label{eq:control_error}
@@ -512,7 +532,7 @@ where $K_p$ and $K_i$ are the proportional and integral gains. The proportional 
 
 \begin{figure}[htbp]
     \centering
-    % \includegraphics[width=0.9\columnwidth]{mtpa_control_diagram.png}
+    \includegraphics[width=0.9\columnwidth]{figures/MTPA_flowdiagram.png}
     \caption{Flowchart of the MTPA PI controller. The corrected Hall signals provide accurate $\hat{\theta}_r$ for computing $i_{ds}$ from phase currents. The average $\bar{i}_{ds}$ is fed to the PI controller, which outputs compensation angle $\Delta\phi_v$ to maintain MTPA.}
     \label{fig:mtpa_diagram}
 \end{figure}
@@ -523,14 +543,20 @@ The total firing angle combines the COM advance with the dynamic compensation:
     \label{eq:total_firing_angle}
 \end{equation}
 
-This corrected angle $\phi'_v$ adjusts when the VSI commutates relative to Hall transitions. At higher speeds, the inductive lag increases due to the rotational coupling term $\omega_r L_s i_q$ in \eqref{eq:vd}, requiring larger $\Delta\phi_v$. Similarly, at higher torque (larger $i_q$), the current rise time during commutation is longer, also requiring more advance. The PI controller automatically finds the optimal $\Delta\phi_v$ for each operating point, maximizing the torque-per-ampere ratio.
+This corrected angle $\phi'_v$ adjusts when the VSI commutates relative to Hall transitions. At higher speeds, 
+the inductive lag increases due to the rotational coupling term $\omega_r L_s i_q$ in \eqref{eq:vd}, 
+requiring larger $\Delta\phi_v$. Similarly, at higher torque (larger $i_q$), the current rise time during 
+commutation is longer, also requiring more advance. 
+By using PI controller, the system can automatically find the 
+optimal $\Delta\phi_v$ for each operating point for MTPA operation.
 
 Together with the LUT-based Hall correction from Section \ref{sec:hall_filter}, this combined control architecture \cite{b1} enables BLDC motors with Hall sensor misalignment and large stator inductance to achieve near-optimal MTPA operation. The commutation timing is influenced by both corrections:
 \begin{equation}
-    t_{out}(n) = t_{in}(n) + \tau_{corr}(n) + \frac{\Delta\phi_v[n]}{\hat{\omega}_r[n]}
+    t_{out}(n) = t_{in}(n) + \tau_{corr}(n) - \frac{\Delta\phi_v[n]}{\hat{\omega}_r[n]}
     \label{eq:combined_timing}
 \end{equation}
-where the first correction term $\tau_{corr}(n)$ from \eqref{eq:tau_lut} balances the Hall intervals, and the second term applies the MTPA advance compensation. The system dynamically adjusts both corrections in real time to maintain optimal performance under transients.
+where the first correction term $\tau_{corr}(n)$ from \eqref{eq:tau_lut} balances the Hall intervals, and the second term applies the MTPA advance compensation. 
+The system dynamically adjusts both corrections in real time to maintain optimal performance under transients.
 
 \section{Detailed Machine Simulations}
 \label{sec:simulation}
@@ -618,19 +644,21 @@ Rated Speed & $\omega_{rated}$ & \SI{3000}{rpm} \\
 The authors acknowledge the support of the Department of Electrical and Computer Engineering at the University of British Columbia.
 
 \begin{thebibliography}{00}
-\bibitem{b1} M. Phung, ``Maximum Torque per Ampere Control of Brushless DC Motors with Large Winding Time Constant and Hall-Sensor Misalignment,'' BASc Thesis, University of British Columbia, Vancouver, BC, 2025.
-\bibitem{b2} M. Hasman, ``Mitigating Misaligned Hall Sensors in BLDC Motors Using a Calibration Routine for Improved Fast Electromechanical Transients,'' BASc Thesis, University of British Columbia, Vancouver, BC, 2025.
-\bibitem{b3} P. C. Krause, O. Wasynczuk, and S. D. Sudhoff, \emph{Analysis of Electric Machinery and Drive Systems}, 2nd ed., Piscataway, NJ: IEEE Press, 2002.
-\bibitem{b4} P. Pillay and R. Krishnan, ``Modeling, simulation, and analysis of permanent-magnet motor drives, part II: The brushless DC motor drive,'' \emph{IEEE Trans. Ind. Appl.}, vol. 25, no. 2, pp. 274--279, Mar./Apr. 1989.
-\bibitem{b5_book} P. C. Krause, O. Wasynczuk, S. Pekarek, and T. O'Connell, \emph{Electromechanical Motion Devices: Rotating Magnetic field-based Analysis with Online Animations}. Hoboken, NJ: Wiley-IEEE Press, 2020.
-\bibitem{b5} D.-K. Kim, K.-W. Lee, and B.-I. Kwon, ``Commutation torque ripple reduction in a position sensorless brushless DC motor drive,'' \emph{IEEE Trans. Power Electron.}, vol. 21, no. 6, pp. 1762--1768, Nov. 2006.
-\bibitem{b6} Y. Liu, Z. Q. Zhu, and D. Howe, ``Commutation-torque-ripple minimization in direct-torque-controlled PM brushless DC drives,'' \emph{IEEE Trans. Ind. Appl.}, vol. 43, no. 4, pp. 1012--1021, Jul./Aug. 2007.
-\bibitem{b7} R. C. Osgood, ``Hall Effect Sensor Misalignment Correction in BLDC Motors,'' \emph{IEEE Trans. Ind. Electron.}, vol. 58, no. 9, 2011.
-\bibitem{b8} J. Fang, ``Torque ripple minimization in BLDC motors with vector control,'' \emph{IEEE Trans. Magn.}, vol. 45, no. 1, 2009.
-\bibitem{b9} S. Song, ``Averaging filter for Hall sensor error correction,'' \emph{IEEE Trans. Power Electron.}, vol. 28, 2013.
-\bibitem{b10} H. Wang, ``Digital filter design for BLDC drives,'' \emph{Conf. Rec. IEEE IAS}, 2015.
-\bibitem{b11} K. I. Hwu, ``Phase Advance Control for BLDC,'' \emph{IEEE Trans. Power Electron.}, 2010.
-\bibitem{b12} C. Xia, ``Automatic Phase Advance,'' \emph{IEEE Trans. Energy Convers.}, 2016.
+
+\bibitem{b1} M. Phung, ``Maximum Torque per Ampere Control of Brushless DC Motors with Large Winding Time Constant and Hall-Sensor Misalignment,'' B.A.Sc. thesis, University of British Columbia, Vancouver, BC, Canada, 2025.
+\bibitem{b2} M. Hasman, ``Mitigating Misaligned Hall Sensors in Brushless DC Motors Using a Calibration Routine for Improved Fast Electromechanical Transients,'' B.A.Sc. thesis, University of British Columbia, Vancouver, BC, Canada, 2025.
+\bibitem{b3} P. C. Krause, O. Wasynczuk, S. D. Pekarek, and T. O'Connell, \emph{Electromechanical Motion Devices: Rotating Magnetic Field-based Analysis with Online Animations}. Hoboken, NJ, USA: Wiley-IEEE Press, 2020.
+\bibitem{b4} P. Pillay and R. Krishnan, ``Modeling, simulation, and analysis of permanent-magnet motor drives, part II: The brushless DC motor drive,'' \emph{IEEE Trans. Ind. Appl.}, vol. 25, no. 2, pp. 265--273, Mar./Apr. 1989.
+\bibitem{b5} S. D. Sudhoff and P. C. Krause, ``Operating modes of the brushless DC motor with a 120 degrees inverter,'' \emph{IEEE Trans. Energy Convers.}, vol. 5, no. 3, pp. 558--564, Sep. 1990.
+\bibitem{b6} N. Samoylenko, Q. Han, and J. Jatskevich, ``Dynamic Performance of Brushless DC Motors With Unbalanced Hall Sensors,'' \emph{IEEE Trans. Energy Convers.}, vol. 23, no. 3, pp. 752--763, Sep. 2008.
+\bibitem{b7} P. Alaeinovin, S. Chiniforoosh, and J. Jatskevich, ``Evaluating misalignment of hall sensors in brushless DC motors,'' in \emph{Proc. IEEE Canada Electr. Power Conf.}, Oct. 2008, pp. 1--6.
+\bibitem{b8} J. Zhou, S. Ebrahimi, and J. Jatskevich, ``Extended Operation of Brushless DC Motors Beyond 120$^{\circ}$ under Maximum Torque Per Ampere Control,'' \emph{IEEE Trans. Energy Convers.}, vol. 38, no. 2, pp. 1--12, Jun. 2023.
+\bibitem{b9} P. Alaeinovin and J. Jatskevich, ``Filtering of Hall-Sensor Signals for Improved Operation of Brushless DC Motors,'' \emph{IEEE Trans. Energy Convers.}, vol. 27, no. 2, pp. 547--549, Jun. 2012.
+\bibitem{b10} J. Zhou, J. Lu, S. Ebrahimi, and J. Jatskevich, ``A Compensation of Commutation Angle in Hall-Sensor-Controlled Brushless DC Motors for Maximum Torque per Ampere Operation,'' in \emph{Proc. 21st Int. Symp. INFOTEH-JAHORINA}, Mar. 2022, pp.
+\bibitem{b11} B. Tan, X. Wang, D. Zhao, K. Shen, J. Zhao, and X. Ding, ``A Lag Angle Compensation Strategy of Phase Current for High-Speed BLDC Motors,'' \emph{IEEE Access}, vol. 7, pp. 9566--9574, 2019.
+\bibitem{b12} X. Shi, X. Wang, C. Gu, and Z. Deng, ``A novel commutation correction method for high-speed PM brushless dc motor,'' in \emph{Proc. IEEE Appl. Power Electron. Conf. Expo. (APEC)}, Mar. 2017, pp. 1899--1905.
+\bibitem{b13} The MathWorks, Inc., \emph{SimPowerSystems: Model and Simulate Electrical Power Systems User's Guide}. Natick, MA, USA: The MathWorks, Inc., 2006.
+
 \end{thebibliography}
 
 \end{document}
