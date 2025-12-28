@@ -293,12 +293,13 @@ which describes how the phase current must transition from zero to its conductin
 Additionally, the rotational coupling terms $\omega_r L_s i_d$ in \eqref{eq:vq} and $\omega_r L_s i_q$ in \eqref{eq:vd} 
 scale proportionally with rotor speed. At higher speeds, these terms become significant relative to the resistive drops, creating cross-axis voltage coupling that further delays the current response. 
 The combined effect of both the transient and rotational inductive terms causes the fundamental component of the phase current to lag behind the back-EMF $e_{qs} = \omega_r \psi_m$ by an angle $\phi_v$, 
-as illustrated in \Cref{fig:hall_sensor_comparison}. %%% FIX THIS, NEED NEW IMAGE
-% \begin{figure}[htbp]
-% \centerline{\includegraphics[width=0.8\columnwidth]{figures/current_emf_misalignment.png}}
-% \caption{Phase current fundamental component lags back-EMF due to stator inductance, causing angle $\phi_v$ that increases with rotor speed $\omega_r$.}
-% \label{fig:current_emf_misalignment}
-% \end{figure}
+as illustrated in \Cref{fig:current_emf_misalignment}.
+
+\begin{figure}[htbp]
+\centerline{\includegraphics[width=0.8\columnwidth]{figures/0_intro_misalignment.png}}
+\caption{Phase current fundamental component lags back-EMF due to stator inductance, causing angle $\phi_v$ that increases with rotor speed $\omega_r$.}
+\label{fig:current_emf_misalignment}
+\end{figure}
 
 The consequence of this misalignment is a non-zero average $d$-axis current $\bar{i}_d$. 
 Recall from \eqref{eq:torque_simplified} that only $i_q$ contributes to electromagnetic torque. 
@@ -530,6 +531,8 @@ The PI controller outputs a compensation angle $\Delta\phi_v[n]$:
 \end{equation}
 where $K_p$ and $K_i$ are the proportional and integral gains. The proportional term provides fast response, while the integral term eliminates steady-state error.
 
+
+
 \begin{figure}[htbp]
     \centering
     \includegraphics[width=0.9\columnwidth]{figures/MTPA_flowdiagram.png}
@@ -556,45 +559,86 @@ Together with the LUT-based Hall correction from Section \ref{sec:hall_filter}, 
     \label{eq:combined_timing}
 \end{equation}
 where the first correction term $\tau_{corr}(n)$ from \eqref{eq:tau_lut} balances the Hall intervals, and the second term applies the MTPA advance compensation. 
-The system dynamically adjusts both corrections in real time to maintain optimal performance under transients.
+The system dynamically adjusts both corrections in real time to maintain optimal performance.
+
+
 
 \section{Detailed Machine Simulations}
 \label{sec:simulation}
-The proposed combined control strategy was validated using a high-fidelity BLDC motor model.
+The proposed combined control strategy was validated using Simulink and a common industrial BLDC motor. 
+The motor parameters are listed in the Appendix A.
 
-\subsection{Steady-State Performance}
-The effectiveness of the method is demonstrated by observing the alignment of phase currents and back-EMF. \Cref{fig:alignment} compares the uncompensated case (a), the filter-only case (b), and the combined Method (c). The uncompensated waveforms show significant distortion and phase lag. The filter balances the switching intervals, but the phase lag persists. The combined method (c) achieves both balanced intervals and optimal phase alignment.
+
+
+
+\subsection{Validation of LUT and MTPA Controller}
+
+
+To validate the effectiveness of the proposed LUT-based Hall correction and MTPA controller, we will 
+compare the method against the model in past literatures \cite{b1, b2}.
+
+First the motor is simulated with Hall sensor misalignment of $+9^{\circ}$, $-1^{\circ}$, and $+7^{\circ}$ for $H_1$, $H_2$, and $H_3$ respectively.
+By running the calibration phase with the 6-step averaging filter from \eqref{eq:tau_a6},
+the LUT correction angles for each sector can be visualized as shown in \Cref{fig:lut_correction_angles}. 
 
 \begin{figure}[htbp]
-\centerline{\includegraphics[width=\columnwidth]{C:/Users/gyang/.gemini/antigravity/brain/b08294ba-f3f3-4f5f-9c56-ce80970f78f6/uploaded_image_3_1765166842486.png}}
-\caption{Alignment of the fundamental phase current and back-EMF: (a) uncompensated; (b) filter only; (c) combined filter + MTPA controller.}
+    \centering
+    \includegraphics[width=0.5\linewidth]{figures/lut_angle_chart.png}
+    \caption{Visualised LUT correction angles for Hall sensor misalignment.}
+    \label{fig:lut_correction_angles}
+\end{figure}
+
+Then, \Cref{fig:lut_vs_filter_verification} compares the behaviour of Hall correction either with LUT or filter, 
+along with MTPA. 
+The figure is divided into three sequential stages to illustrate the sequence of operations each controller do.
+Initially, both methods start with no Hall compensation, resulting in significant oscillations in $i_d$ and $\bar{i}_d$.
+Then the Hall correction is enabled either through the filter (a) or LUT (b). 
+Observe that both methods successfully balance the switching intervals as indicated by the 
+symmetric current waveform. Consequently, the oscillations in $i_d$ and $\bar{i}_d$ are eliminated, with $\bar{i}_d$ reaching a non zero
+constant value. This confirms the validity of using LUT for Hall correction, achieving similar steady-state performance as the filter method
+in past studies.
+%% FIX needs to be moved up to make it look good
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\linewidth]{figures/current_transient_stacked_inset.png}
+    \caption{Simulated phase current $i_{a}$, d-axis current $i_{d}$, and time averaged d-axis current $i_{\bar{d}}$ for (a) Filter, (b) MTPA.}
+    \label{fig:lut_vs_filter_verification}
+\end{figure}
+\Cref{fig:lut_vs_filter_verification}
+
+
+Since the $\bar{i}_d$ is now stable, it is now suitable for MTPA control. Note that after the MTPA is activated, 
+the PI controller quickly drives $\bar{i}_d$ to zero, achieving MTPA operation. From \Cref{sec:mtpa_control} 
+we can verify the effectiveness of the MTPA by observing the alignment of phase currents and back-EMF. 
+
+\begin{figure}[htbp]
+\centerline{\includegraphics[width=\columnwidth]{figures/1_phase_alignment.png}}
+\caption{Alignment of the fundamental phase current and back-EMF: (a) uncompensated; (b) LUT only; (c) LUT + MTPA controller.}
 \label{fig:alignment}
 \end{figure}
 
-\Cref{fig:results_torque} presents the steady-state performance comparison in terms of torque generation efficiency, defined as the ratio of average torque to RMS phase current ($K_t = \bar{T}_e / I_{rms}$). The uncompensated case exhibits the lowest efficiency due to significant phase misalignment. The filter-only approach improves commutation symmetry but introduces delays that prevent optimal torque production. The proposed combined method (LUT + MTPA) demonstrates the highest torque-per-ampere ratio, confirming that the algorithm successfully compensates for both Hall sensor placement errors and inductive phase lag, thereby recovering the optimal operating point.
+\Cref{fig:alignment} compares the uncompensated case (a), the LUT-only case (b), and the combined Method (c). 
+The uncompensated waveforms show significant distortion and phase lag. The filter balances the switching intervals, 
+but the phase lag persists. Finally, combining the LUT with MTPA (c), the controller achieves both balanced intervals 
+and aligns the fundamental phase current and back-EMF and we achieve MTPA operation.
+
+
+\Cref{fig:results_torque} presents the steady-state performance comparison in terms of torque generation efficiency, 
+defined as the ratio of average torque to RMS phase current ($K_t = \bar{T}_e / I_{rms}$). 
+The uncompensated case exhibits the lowest efficiency due to significant phase misalignment. 
+The filter-only approach improves commutation symmetry but introduces delays that prevent optimal 
+torque production. The proposed combined method (LUT + MTPA) demonstrates the highest torque-per-ampere ratio, 
+confirming that the algorithm successfully compensates for both Hall sensor placement errors and inductive phase 
+lag, thereby recovering the optimal operating point.
 
 \begin{figure}[htbp]
-\centerline{\includegraphics[width=\columnwidth]{figures/torque_comparison_paper.png}}
-\caption{Comparison of Torque Generation Efficiency (Torque Constant $K_t$) across four operating cases. The proposed LUT + MTPA method achieves the highest torque-per-ampere, indicating optimal alignment.}
+\centerline{\includegraphics[width=\columnwidth]{figures/2_tpa_comparison.png}}
+\caption{Comparison of Torque Generation Efficiency (Torque Constant $K_t$). The proposed LUT + MTPA method achieves the highest 
+torque-per-ampere, indicating optimal alignment.}
 \label{fig:results_torque}
 \end{figure}
 
 \subsection{Transient Performance}
-To verify the robustness of the proposed control, transient response tests were conducted.
-
-\Cref{fig:transient_compare} shows a comparison of the current response during startup. The uncompensated case shows large current spikes, while the proposed method smooths the current envelope. \Cref{fig:transient_stacked} provides a detailed view of the phase currents with and without compensation.
-
-\begin{figure}[htbp]
-\centerline{\includegraphics[width=\columnwidth]{figures/current_transient_compare.png}}
-\caption{Comparison of phase current transients during startup. The proposed method (Red) reduces peak overshoot compared to uncompensated (Blue).}
-\label{fig:transient_compare}
-\end{figure}
-
-\begin{figure}[htbp]
-\centerline{\includegraphics[width=\columnwidth]{figures/current_transient_stacked_inset.png}}
-\caption{Stacked view of phase currents, highlighting the zoomed-in improvement in waveform quality.}
-\label{fig:transient_stacked}
-\end{figure}
 
 \Cref{fig:speed_step} illustrates the speed response of the motor to a step command. The yellow trace representing the proposed LUT correction demonstrates a response time comparable to the ideal sensor placement (blue trace), significantly outperforming the 3-step and 6-step averaging filters which introduce noticeable delays and overshoot.
 

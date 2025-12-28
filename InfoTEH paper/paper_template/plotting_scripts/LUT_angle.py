@@ -3,7 +3,9 @@ import numpy as np
 import os
 
 # --- 1. Define Data ---
-angles_deg = np.array([56.332, 63.324, 60.326, 56.33, 63.326, 60.332])
+# angles_deg = np.array([56.332, 63.324, 60.326, 56.33, 63.326, 60.332])
+angles_deg = np.array([55.998, 57.995, 65.991, 55.998, 57.994, 65.99])
+
 N = len(angles_deg)
 roman_labels = ['I', 'II', 'III', 'IV', 'V', 'VI']
 

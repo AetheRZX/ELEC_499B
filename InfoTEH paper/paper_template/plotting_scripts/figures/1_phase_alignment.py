@@ -97,8 +97,8 @@ fig, axes = plt.subplots(3, 1, figsize=(8, 10), constrained_layout=True)
 
 points = [
     {'time': 0.41,  'label': '(a) Uncompensated'},
-    {'time': 0.55, 'label': '(b) Filter Only'},
-    {'time': 1.0,  'label': '(c) Filter + MTPA'}
+    {'time': 0.55, 'label': '(b) LUT Only'},
+    {'time': 1.0,  'label': '(c) LUT + MTPA'}
 ]
 
 # Calculate periods and offset
