@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.27 (MiKTeX 25.4) (preloaded format=pdflatex 2025.12.5)  27 DEC 2025 18:16
+This is pdfTeX, Version 3.141592653-2.6-1.40.27 (MiKTeX 25.4) (preloaded format=pdflatex 2025.12.5)  28 DEC 2025 20:33
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -796,12 +796,12 @@ LaTeX Warning: Command \textdegree invalid in math mode on input line 315.
 LaTeX Warning: Command \textdegree invalid in math mode on input line 315.
 
 Missing character: There is no ° in font cmr10!
-<figures/hall_sensor_misaligned_physical.png, id=27, 326.72063pt x 319.1925pt>
+<figures/hall_sensor_misaligned_physical.png, id=27, 2087.8pt x 2055.68pt>
 File: figures/hall_sensor_misaligned_physical.png Graphic file (type png)
 <use figures/hall_sensor_misaligned_physical.png>
 Package pdftex.def Info: figures/hall_sensor_misaligned_physical.png  used on i
 nput line 327.
-(pdftex.def)             Requested size: 151.20154pt x 147.71675pt.
+(pdftex.def)             Requested size: 151.20154pt x 148.8683pt.
 <figures/hall_sensor_comparison_paper.png, id=28, 619.8357pt x 292.6935pt>
 File: figures/hall_sensor_comparison_paper.png Graphic file (type png)
 <use figures/hall_sensor_comparison_paper.png>
@@ -809,65 +809,84 @@ Package pdftex.def Info: figures/hall_sensor_comparison_paper.png  used on inpu
 t line 343.
 (pdftex.def)             Requested size: 252.0pt x 118.99576pt.
 [3 <./figures/0_intro_misalignment.png> <./figures/hall_sensor_misaligned_physi
-cal.png> <./figures/hall_sensor_comparison_paper.png>] [4]
+cal.png (PNG copy)> <./figures/hall_sensor_comparison_paper.png>]
 
-LaTeX Warning: Command \textdegree invalid in math mode on input line 486.
+pdfTeX warning: pdflatex.exe (file ./figures/Visio/Flowcharts_1.pdf): PDF inclu
+sion: found PDF version <1.7>, but at most version <1.5> allowed
+<figures/Visio/Flowcharts_1.pdf, id=34, page=2, 1204.01822pt x 311.60416pt>
+File: figures/Visio/Flowcharts_1.pdf Graphic file (type pdf)
+<use figures/Visio/Flowcharts_1.pdf, page 2>
+Package pdftex.def Info: figures/Visio/Flowcharts_1.pdf , page2 used on input l
+ine 443.
+(pdftex.def)             Requested size: 252.0pt x 65.21532pt.
+[4]
+
+LaTeX Warning: Reference `eq:tau_lut' on page 5 undefined on input line 498.
 
 
-LaTeX Warning: Command \textdegree invalid in math mode on input line 486.
+LaTeX Warning: Command \textdegree invalid in math mode on input line 518.
+
+
+LaTeX Warning: Command \textdegree invalid in math mode on input line 518.
 
 Missing character: There is no ° in font cmr10!
-<figures/MTPA_flowdiagram.png, id=38, 685.8122pt x 490.83376pt>
-File: figures/MTPA_flowdiagram.png Graphic file (type png)
-<use figures/MTPA_flowdiagram.png>
-Package pdftex.def Info: figures/MTPA_flowdiagram.png  used on input line 538.
-(pdftex.def)             Requested size: 226.79846pt x 162.32014pt.
-
-LaTeX Warning: Command \textdegree invalid in math mode on input line 545.
 
 
-LaTeX Warning: Command \textdegree invalid in math mode on input line 545.
+pdfTeX warning: pdflatex.exe (file ./figures/Visio/Flowcharts_1.pdf): PDF inclu
+sion: found PDF version <1.7>, but at most version <1.5> allowed
+<figures/Visio/Flowcharts_1.pdf, id=38, page=1, 564.91049pt x 419.166pt>
+File: figures/Visio/Flowcharts_1.pdf Graphic file (type pdf)
+<use figures/Visio/Flowcharts_1.pdf, page 1>
+Package pdftex.def Info: figures/Visio/Flowcharts_1.pdf , page1 used on input l
+ine 570.
+(pdftex.def)             Requested size: 226.79846pt x 168.28383pt.
+
+LaTeX Warning: Command \textdegree invalid in math mode on input line 577.
+
+
+LaTeX Warning: Command \textdegree invalid in math mode on input line 577.
 
 Missing character: There is no ° in font cmr10!
-[5 <./figures/MTPA_flowdiagram.png>]
-<figures/lut_angle_chart.png, id=43, 541.5432pt x 574.0647pt>
+[5 <./figures/Visio/Flowcharts_1.pdf>]
+
+LaTeX Warning: Reference `eq:tau_lut' on page 6 undefined on input line 593.
+
+<figures/lut_angle_chart.png, id=101, 578.16pt x 578.16pt>
 File: figures/lut_angle_chart.png Graphic file (type png)
 <use figures/lut_angle_chart.png>
-Package pdftex.def Info: figures/lut_angle_chart.png  used on input line 586.
-(pdftex.def)             Requested size: 126.0pt x 133.56502pt.
-<figures/current_transient_stacked_inset.png, id=44, 1019.7297pt x 452.4102pt>
+Package pdftex.def Info: figures/lut_angle_chart.png  used on input line 618.
+(pdftex.def)             Requested size: 126.0pt x 125.99579pt.
+<figures/current_transient_stacked_inset.png, id=102, 1019.7297pt x 452.4102pt>
+
 File: figures/current_transient_stacked_inset.png Graphic file (type png)
 <use figures/current_transient_stacked_inset.png>
 Package pdftex.def Info: figures/current_transient_stacked_inset.png  used on i
-nput line 603.
+nput line 635.
 (pdftex.def)             Requested size: 252.0pt x 111.79756pt.
-<figures/1_phase_alignment.png, id=45, 578.16pt x 722.7pt>
+<figures/1_phase_alignment.png, id=103, 578.16pt x 722.7pt>
 File: figures/1_phase_alignment.png Graphic file (type png)
 <use figures/1_phase_alignment.png>
-Package pdftex.def Info: figures/1_phase_alignment.png  used on input line 615.
+Package pdftex.def Info: figures/1_phase_alignment.png  used on input line 647.
 
 (pdftex.def)             Requested size: 252.0pt x 315.00052pt.
-<figures/2_tpa_comparison.png, id=46, 433.62pt x 361.35pt>
+[6 <./figures/Visio/Flowcharts_1.pdf> <./figures/lut_angle_chart.png> <./figure
+s/current_transient_stacked_inset.png>]
+<figures/2_tpa_comparison.png, id=123, 433.62pt x 361.35pt>
 File: figures/2_tpa_comparison.png Graphic file (type png)
 <use figures/2_tpa_comparison.png>
-Package pdftex.def Info: figures/2_tpa_comparison.png  used on input line 635.
+Package pdftex.def Info: figures/2_tpa_comparison.png  used on input line 667.
 (pdftex.def)             Requested size: 252.0pt x 210.00218pt.
-<figures/speed_step_placeholder.png, id=47, 349.7868pt x 251.4996pt>
-File: figures/speed_step_placeholder.png Graphic file (type png)
-<use figures/speed_step_placeholder.png>
-Package pdftex.def Info: figures/speed_step_placeholder.png  used on input line
- 646.
-(pdftex.def)             Requested size: 252.0pt x 181.19086pt.
- [6 <./figures/lut_angle_chart.png> <./figures/current_transient_stacked_inset.
-png>]
-<figures/torque_step_placeholder.png, id=53, 349.7868pt x 251.4996pt>
-File: figures/torque_step_placeholder.png Graphic file (type png)
-<use figures/torque_step_placeholder.png>
-Package pdftex.def Info: figures/torque_step_placeholder.png  used on input lin
-e 654.
-(pdftex.def)             Requested size: 252.0pt x 181.19086pt.
- [7 <./figures/1_phase_alignment.png> <./figures/2_tpa_comparison.png> <./figur
-es/speed_step_placeholder.png> <./figures/torque_step_placeholder.png>]
+<figures/3_startup.png, id=124, 578.16pt x 722.7pt>
+File: figures/3_startup.png Graphic file (type png)
+<use figures/3_startup.png>
+Package pdftex.def Info: figures/3_startup.png  used on input line 689.
+(pdftex.def)             Requested size: 252.0pt x 315.00052pt.
+<figures/4_torque_step.png, id=125, 505.89pt x 433.62pt>
+File: figures/4_torque_step.png Graphic file (type png)
+<use figures/4_torque_step.png>
+Package pdftex.def Info: figures/4_torque_step.png  used on input line 700.
+(pdftex.def)             Requested size: 252.0pt x 216.00224pt.
+ [7 <./figures/1_phase_alignment.png> <./figures/2_tpa_comparison.png>]
 
 ** Conference Paper **
 Before submitting the final camera ready copy, remember to:
@@ -879,20 +898,23 @@ Before submitting the final camera ready copy, remember to:
  uses only Type 1 fonts and that every step in the generation
  process uses the appropriate paper size.
 
-[8
-
-] (IEEE-conference-template-062824.aux)
+[8 <./figures/3_startup.png> <./figures/4_torque_step.png>]
+(IEEE-conference-template-062824.aux)
  ***********
 LaTeX2e <2025-11-01>
 L3 programming layer <2025-11-06>
  ***********
+
+
+LaTeX Warning: There were undefined references.
+
  ) 
 Here is how much of TeX's memory you used:
- 22089 strings out of 467871
- 490706 string characters out of 5418376
- 837822 words of memory out of 5000000
- 50667 multiletter control sequences out of 15000+600000
- 667070 words of font info for 117 fonts, out of 8000000 for 9000
+ 22100 strings out of 467871
+ 490869 string characters out of 5418376
+ 838015 words of memory out of 5000000
+ 50677 multiletter control sequences out of 15000+600000
+ 668177 words of font info for 118 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  84i,11n,94p,1073b,848s stack positions out of 10000i,1000n,20000p,200000b,200000s
 <C:/Users/gyang/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/
@@ -914,10 +936,10 @@ s/type1/urw/times/utmb8a.pfb><C:/Users/gyang/AppData/Local/Programs/MiKTeX/font
 s/type1/urw/times/utmbi8a.pfb><C:/Users/gyang/AppData/Local/Programs/MiKTeX/fon
 ts/type1/urw/times/utmr8a.pfb><C:/Users/gyang/AppData/Local/Programs/MiKTeX/fon
 ts/type1/urw/times/utmri8a.pfb>
-Output written on IEEE-conference-template-062824.pdf (8 pages, 2476194 bytes).
+Output written on IEEE-conference-template-062824.pdf (8 pages, 8566633 bytes).
 
 PDF statistics:
- 140 PDF objects out of 1000 (max. 8388607)
+ 212 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)
- 68 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 73 words of extra memory for PDF output out of 10000 (max. 10000000)
 

@@ -394,7 +394,11 @@ where the coefficients $b_m$ sum to unity. For example, the 3-step and 6-step ex
 \end{equation}
 where $\tau(n)$ denotes the measured time interval for the $n$-th switching sector.
 
-These filters successfully balance the conduction intervals in steady state by attenuating the harmonics in the interval sequence $\{\Delta t_n\}$. However, the critical drawback is that any averaging filter with memory introduces a group delay of approximately $M/2$ intervals \cite{b1}. During transients such as rapid accelerations or load changes, this delay causes the estimated rotor speed $\hat{\omega}_r$ to lag the actual speed $\omega_r$. The result is a mismatch in the calculated rotor position $\hat{\theta}_r$, which propagates through the Park transformation \eqref{eq:park} and corrupts the computed $d$-axis and $q$-axis currents. 
+These filters successfully balance the conduction intervals in steady state by attenuating the harmonics in the interval sequence $\{\Delta t_n\}$. 
+However, the critical drawback is that any averaging filter with memory introduces a delay \cite{b1, b2}. 
+During transients such as rapid accelerations or load changes, this delay causes the estimated rotor speed $\hat{\omega}_r$ to lag the actual speed $\omega_r$. 
+The result is a mismatch in the calculated rotor position $\hat{\theta}_r$, which propagates through the Park transformation \eqref{eq:park} and corrupts the 
+computed $d$-axis and $q$-axis currents. 
 
 For the MTPA controller, this lag is particularly problematic. The controller relies on an accurate calculation of the average $d$-axis current $\bar{i}_{ds}$ to determine the required firing angle compensation. When $\hat{\theta}_r$ lags the true position due to filter delay, the measured $\bar{i}_{ds}$ oscillates even when the motor is operating at the true MTPA condition, causing the PI controller to make incorrect adjustments. This can lead to instability in the MTPA loop and degraded transient response, which is unacceptable for applications requiring rapid dynamic performance such as robotics and electric vehicles.
 
@@ -404,26 +408,20 @@ To eliminate the delay caused by memories while preserving correction accuracy, 
 The key idea is that Hall sensor misalignment is a fixed geometric error that does not change during operation. 
 Therefore, the correction values can be identified once during a calibration phase and then applied instantaneously during runtime without any filtering.
 
-\begin{figure}[htbp]
-    \centering
-    % \includegraphics[width=0.8\linewidth]{control_flow_diagram.png}
-    \caption{Control flow diagram showing the transition from calibration mode (using averaging filter to identify errors) to runtime mode (using LUT correction for zero-delay operation).}
-    \label{fig:control_flow}
-\end{figure}
 
-During the calibration phase, first the motor is driven to a stable steady-state speed. 
-Then a filter can be chosen, for this study I used a high-order averaging filter such as the 6-step filter from \eqref{eq:tau_a6}. This filter has significant delay
-thus it does not have a good transient response, as such it is a good candidate to be compared against the proposed LUT method.
-The chosen filter is applied to balance the measured Hall intervals and remove the effects of misalignment. 
+For this study, a high-order averaging filter such as the 6-step filter from \eqref{eq:tau_a6} was used. 
+The filter has good steady-state performance in balancing the Hall intervals but has significant delay,
+thus it does not have a good transient response. As such, it is a good candidate to be compared against the proposed LUT method.
+The chosen filter is applied to balance the measured Hall intervals and remove the effects of misalignment by outputting the correction time. 
 The filtered interval $\tau'(n)$ represents what the commutation interval duration would be if the Hall sensors were ideally positioned.
 
 For each of the six Hall states $S \in \{1, 2, 3, 4, 5, 6\}$, the filter would learn the specific time duration for each sector at that specific reference speed, $\bar{\tau}[S]|_{\omega = \omega_{ref}}$. 
-Furthermore, we can get a speed estimate $\hat{\omega}_r$ at that operating point using the filtered intervals. Where the speed estimate is computed as
+Furthermore, we can get a speed estimate $\hat{\omega}_r$ at that operating point using the filtered intervals\cite{b6}. Where the speed estimate is computed as
 \begin{equation}
-    \hat{\omega}_r[n] = \frac{\pi/3}{t[n] - t[n - 1] }
+    \hat{\omega}_r[n] = \frac{\pi/3}{t^{ISR}_{software}[n] - t^{ISR}_{software}[n - 1] }
     \label{eq:speed_estimate}
 \end{equation}
-Where $t[n]$ is the timestamp of the current Hall transition and $t[n - 1]$ is the timestamp of the previous Hall transition.
+Where $t^{ISR}_{software}[n]$ is the software timestamp of the current Hall transition and $t^{ISR}_{software}[n - 1]$ is the software timestamp of the previous Hall transition.
 
 The misalignment angle in each state can then be calculated with.
 \begin{equation}
@@ -434,29 +432,63 @@ The misalignment angle in each state can then be calculated with.
 The angular corrections for all six Hall states are recorded and stored in a Lookup Table. 
 Note that these corrections represent geometric errors in sensor placement, and thus they remain valid across all operating conditions and speeds. 
 The calibration only needs to be performed once after motor assembly or can be repeated if the Hall sensor PCB is replaced. 
-For subsequent operation, the controller can apply these pre-computed corrections during startup and directly without any filtering, eliminating runtime delay as shown in \Cref{fig:control_flow}.
+For subsequent operation, the controller can apply these pre-computed corrections during startup and directly without any filtering, 
+eliminating runtime delay as shown in \Cref{fig:control_flow}.
 
-\subsection{Runtime Phase: Feed-Forward Correction}
+\subsection{Implementation of LUT Calibration and Operation}
+The overall control flow is illustrated in \Cref{fig:control_flow} which simulates the 
+calibration routine in a microcontroller. The interrupt service routine (ISR) is triggered by a change in Hall states, defined as
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\linewidth, page=2]{figures/Visio/Flowcharts_1.pdf}
+    \caption{Control flow diagram showing the transition from calibration mode (using averaging filter to identify errors) to runtime mode (using LUT correction for zero-delay operation).}
+    \label{fig:control_flow}
+\end{figure}
 
-During normal runtime operation, the averaging filters are completely bypassed. When a Hall transition occurs for state $S$, the controller retrieves the pre-stored correction angle $\Delta\phi_{LUT}[S]$ from the Lookup Table. 
-Then the speed estimate $\hat{\omega}_r[n]$ is computed using \eqref{eq:speed_estimate} with the current measured interval. The corrected time interval for the next switching sector is then calculated as
 \begin{equation}
-    \tau_{corr}(n) = \frac{\Delta\phi_{LUT}[S]}{\hat{\omega}_r[n]}
-    \label{eq:tau_lut}
+    S = 4H_1 + 2H_2 + H_3
+    \label{eq:hall_state}
 \end{equation}
-
-The next commutation instant $t_{out}(n)$ is then scheduled as
+The ISR calculates and save the time durations $\tau^{corr}_{filter}(n)$ into the memory by using the correction values from the filter of choice. 
+If the calibration flag is still active, the calculated correction values are also stored into the LUT by using the estimated speed from equation \eqref{eq:speed_estimate}.
+The next scheduled time for advancing the hall state is then determined by adding the corrected interval to the current timestamp,
 \begin{equation}
-    t_{out}(n) = t_{in}(n) + \tau_{corr}(n)
-    \label{eq:t_out}
+    t^{ISR}_{software}(n+1) = t^{ISR}_{hardware}(n) + \tau^{corr}_{filter}(n)
+    \label{eq:t_out_cal}
 \end{equation}
-where $t_{in}(n)$ is the time of the current Hall transition.
+This software scheduled time is then compared against the hardware timer to trigger the next commutation event. With this algorithm, 
+the Hall intervals are balanced, removing the effects of misalignment. The control then continues to populate the LUT until all six Hall states have been recorded.
+ 
+After the LUT table is populated, the calibration flag is turned off, and the controller switches to use values from the LUT for calculating the time correction.
+Hence, the process is similar but now the ISR retrieves the pre-computed correction from the LUT.
+The calculated correction interval, $\tau^{corr}_{LUT}(n)$, is obtained using \eqref{eq:lut_angle} and the next scheduled time now becomes
+\begin{equation}
+    t^{ISR}_{software}(n+1) = t^{ISR}_{hardware}(n) + \tau^{corr}_{LUT}(n)
+    \label{eq:t_out_runtime}
+\end{equation}
+The values for the LUT are also retained in non-volatile memory so that they can be loaded at startup for all subsequent operations without needing to recalibrate.
 
-This feed-forward correction approach eliminates the phase lag from filter approach while correcting the Hall sensor misalignment error. 
-The rotor speed estimation $\hat{\omega}_r[n]$ remains 
-accurate during transients because it is based on corrected intervals rather than filtered intervals with memory. 
-Consequently, the rotor position estimate $\hat{\theta}_r$ tracks the true position closely, 
-providing the MTPA controller with accurate feedback for calculating $\bar{i}_{ds}$ and adjusting the firing angle compensation. 
+
+% During normal runtime operation, the averaging filters are completely bypassed. When a Hall transition occurs for state $S$, the controller retrieves the pre-stored correction angle $\Delta\phi_{LUT}[S]$ from the Lookup Table. 
+% Then the speed estimate $\hat{\omega}_r[n]$ is computed using \eqref{eq:speed_estimate} with the current measured interval. The corrected time interval for the next switching sector is then calculated as
+% \begin{equation}
+%     \tau_{corr}(n) = \frac{\Delta\phi_{LUT}[S]}{\hat{\omega}_r[n]}
+%     \label{eq:tau_lut}
+% \end{equation}
+
+% The next commutation instant $t_{out}(n)$ is then scheduled as
+% \begin{equation}
+%     t_{out}(n) = t_{in}(n) + \tau_{corr}(n)
+%     \label{eq:t_out}
+% \end{equation}
+% where $t_{in}(n)$ is the time of the current Hall transition.
+
+Since values for time correction are pre-computed and stored in the LUT, this correction approach eliminates the phase lag 
+from filter approach while correcting the Hall sensor misalignment error \cite{b2}. 
+% The rotor speed estimation $\hat{\omega}_r[n]$ remains 
+% accurate during transients because it is based on corrected intervals rather than filtered intervals with memory. 
+% Consequently, the rotor position estimate $\hat{\theta}_r$ tracks the true position closely, 
+% providing the MTPA controller with accurate feedback for calculating $\bar{i}_{ds}$ and adjusting the firing angle compensation. 
 The LUT-based method thus preserves the system's dynamic response capability while achieving the same 
 steady-state correction accuracy as high-order averaging filters.
 
@@ -535,7 +567,7 @@ where $K_p$ and $K_i$ are the proportional and integral gains. The proportional 
 
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=0.9\columnwidth]{figures/MTPA_flowdiagram.png}
+    \includegraphics[width=0.9\columnwidth, page=1]{figures/Visio/Flowcharts_1.pdf}
     \caption{Flowchart of the MTPA PI controller. The corrected Hall signals provide accurate $\hat{\theta}_r$ for computing $i_{ds}$ from phase currents. The average $\bar{i}_{ds}$ is fed to the PI controller, which outputs compensation angle $\Delta\phi_v$ to maintain MTPA.}
     \label{fig:mtpa_diagram}
 \end{figure}
@@ -566,7 +598,7 @@ The system dynamically adjusts both corrections in real time to maintain optimal
 \section{Detailed Machine Simulations}
 \label{sec:simulation}
 The proposed combined control strategy was validated using Simulink and a common industrial BLDC motor. 
-The motor parameters are listed in the Appendix A.
+The motor parameters are listed in the B.
 
 
 
@@ -640,25 +672,44 @@ torque-per-ampere, indicating optimal alignment.}
 
 \subsection{Transient Performance}
 
-\Cref{fig:speed_step} illustrates the speed response of the motor to a step command. The yellow trace representing the proposed LUT correction demonstrates a response time comparable to the ideal sensor placement (blue trace), significantly outperforming the 3-step and 6-step averaging filters which introduce noticeable delays and overshoot.
+% \Cref{fig:speed_step} illustrates the speed response of the motor to a step command. The yellow trace representing the proposed LUT correction demonstrates a response time comparable to the ideal sensor placement (blue trace), significantly outperforming the 3-step and 6-step averaging filters which introduce noticeable delays and overshoot.
 
+% \begin{figure}[htbp]
+% \centerline{\includegraphics[width=\columnwidth]{figures/speed_step_placeholder.png}}
+% \caption{Simulated speed response step increase. (a) with ideal Hall sensor placement; (b) Comparison of averaging filters vs. proposed LUT correction. The LUT method achieves faster convergence.}
+% \label{fig:speed_step}
+% \end{figure}
+
+\Cref{fig:startup} illustrates the speed response of the motor when applying the filter from startup. 
+As shown, the proposed LUT correction achieves a response time comparable to the ideal sensor placement and the Hall intervals are corrected from startup. 
+In contrast, the 3-step and 6-step averaging filters due to their memory based nature, was not able to be properly initialized from startup.
+Filter based approach needs to wait for the motor to reach steady state before they can be activated, where as LUT approach can be used immediately after the calibration.
+This demonstrates the advantage of the LUT method in better transient performance.
 \begin{figure}[htbp]
-\centerline{\includegraphics[width=\columnwidth]{figures/speed_step_placeholder.png}}
+\centerline{\includegraphics[width=\columnwidth]{figures/3_startup.png}}
 \caption{Simulated speed response step increase. (a) with ideal Hall sensor placement; (b) Comparison of averaging filters vs. proposed LUT correction. The LUT method achieves faster convergence.}
-\label{fig:speed_step}
+\label{fig:startup}
 \end{figure}
 
-\Cref{fig:load_step} depicts the system response to a sudden load torque step. The LUT-based controller maintains stability and exhibits superior torque dynamic performance. The speed dip is minimized, and the electromagnetic torque recovers smoothly without the oscillatory behavior observed in the conventional averaging methods.
+\Cref{fig:load_step} depicts the system response to a sudden load torque step. The performances are similar. 
+% The LUT-based controller maintains stability and exhibits superior torque dynamic performance. 
+% The speed dip is minimized, and the electromagnetic torque recovers smoothly without the oscillatory 
+% behavior observed in the conventional averaging methods.
 
 \begin{figure}[htbp]
-\centerline{\includegraphics[width=\columnwidth]{figures/torque_step_placeholder.png}}
+\centerline{\includegraphics[width=\columnwidth]{figures/4_torque_step.png}}
 \caption{Simulated response to a load step increase: (a) speed response; (b) electromagnetic torque response. The proposed LUT correction (yellow trace) shows superior dynamic tracking.}
 \label{fig:load_step}
 \end{figure}
 
 \section{Conclusion}
 \label{sec:conclusion}
-This paper presented a unified control framework addressing two critical performance bottlenecks in BLDC drives: sensor misalignment and inductive lag. By integrating a LUT-based calibration with a dynamic MTPA controller, the system achieves smooth and efficient operation. Simulation results confirm the method's ability to minimize torque ripple and maximize torque-per-ampere, while maintaining excellent transient response characteristics suitable for dynamic industrial applications.
+This paper presented a unified control framework addressing two critical performance bottlenecks in BLDC drives: sensor misalignment and inductive lag. 
+By integrating a LUT-based calibration with a dynamic MTPA controller, the system achieves smooth and efficient operation. 
+Simulation results confirm the method's ability to eliminate misalignment in Hall sensor signals and achieving 
+maximum torque-per-ampere (MTPA) operation, while maintaining excellent transient 
+response characteristics suitable for dynamic industrial applications. Future research will
+explore experimental validation through microcontroller implementation.
 
 \appendix[Motor Parameters]
 The main parameters of the BLDC motor used in this study are listed in Table \ref{tab:motor_params}.
@@ -681,6 +732,25 @@ Rated Speed & $\omega_{rated}$ & \SI{3000}{rpm} \\
 \hline
 \end{tabular}
 \label{tab:motor_params}
+\end{center}
+\end{table}
+
+\appendix[PI Controller Gains]
+\label{sec: PI_gains}
+The PI controller gains used in the MTPA control are listed in Table \ref{tab:pi_gains}.
+\begin{table}[htbp]
+\caption{PI Controller Gains}
+\begin{center}
+\begin{tabular}{|c|c|}
+\hline
+\textbf{Gain} & \textbf{Value} \\
+\hline
+Proportional Gain & $K_p = 0.0068$ \\
+\hline
+Integral Gain & $K_i = 0.744$ \\
+\hline
+\end{tabular}
+\label{tab:pi_gains}
 \end{center}
 \end{table}
 

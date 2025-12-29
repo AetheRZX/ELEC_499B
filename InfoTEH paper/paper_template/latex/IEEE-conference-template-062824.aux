@@ -66,8 +66,9 @@
 \newlabel{fig:hall_sensor_comparison@cref}{{[figure][4][]4}{[1][3][]3}{}{}{}}
 \citation{b1}
 \citation{b1}
-\citation{b1}
+\citation{b1,b2}
 \citation{b2}
+\citation{b6}
 \@writefile{toc}{\contentsline {section}{\numberline {II}Hall Sensor Signal Correction via Lookup Table Calibration}{4}{}\protected@file@percent }
 \newlabel{sec:hall_filter}{{II}{4}{}{section.2}{}}
 \newlabel{sec:hall_filter@cref}{{[section][2][]II}{[1][4][]4}{}{}{}}
@@ -79,21 +80,24 @@
 \newlabel{eq:tau_a6}{{2.3}{4}{}{equation.2.3}{}}
 \newlabel{eq:tau_a6@cref}{{[equation][3][2]2.3}{[1][4][]4}{}{}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {II-B}}Proposed LUT-Based Calibration Strategy}{4}{}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces Control flow diagram showing the transition from calibration mode (using averaging filter to identify errors) to runtime mode (using LUT correction for zero-delay operation).}}{4}{}\protected@file@percent }
-\newlabel{fig:control_flow}{{5}{4}{}{figure.5}{}}
-\newlabel{fig:control_flow@cref}{{[figure][5][]5}{[1][4][]4}{}{}{}}
 \newlabel{eq:speed_estimate}{{2.4}{4}{}{equation.2.4}{}}
 \newlabel{eq:speed_estimate@cref}{{[equation][4][2]2.4}{[1][4][]4}{}{}{}}
 \newlabel{eq:lut_angle}{{2.5}{4}{}{equation.2.5}{}}
 \newlabel{eq:lut_angle@cref}{{[equation][5][2]2.5}{[1][4][]4}{}{}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {II-C}}Runtime Phase: Feed-Forward Correction}{4}{}\protected@file@percent }
-\newlabel{eq:tau_lut}{{2.6}{4}{}{equation.2.6}{}}
-\newlabel{eq:tau_lut@cref}{{[equation][6][2]2.6}{[1][4][]4}{}{}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {II-C}}Implementation of LUT Calibration and Operation}{4}{}\protected@file@percent }
+\newlabel{eq:hall_state}{{2.6}{4}{}{equation.2.6}{}}
+\newlabel{eq:hall_state@cref}{{[equation][6][2]2.6}{[1][4][]4}{}{}{}}
+\citation{b2}
 \citation{b10}
 \citation{b1}
 \citation{b1,b7}
-\newlabel{eq:t_out}{{2.7}{5}{}{equation.2.7}{}}
-\newlabel{eq:t_out@cref}{{[equation][7][2]2.7}{[1][4][]5}{}{}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces Control flow diagram showing the transition from calibration mode (using averaging filter to identify errors) to runtime mode (using LUT correction for zero-delay operation).}}{5}{}\protected@file@percent }
+\newlabel{fig:control_flow}{{5}{5}{}{figure.5}{}}
+\newlabel{fig:control_flow@cref}{{[figure][5][]5}{[1][4][]5}{}{}{}}
+\newlabel{eq:t_out_cal}{{2.7}{5}{}{equation.2.7}{}}
+\newlabel{eq:t_out_cal@cref}{{[equation][7][2]2.7}{[1][4][]5}{}{}{}}
+\newlabel{eq:t_out_runtime}{{2.8}{5}{}{equation.2.8}{}}
+\newlabel{eq:t_out_runtime@cref}{{[equation][8][2]2.8}{[1][5][]5}{}{}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {II-D}}Implementation Considerations}{5}{}\protected@file@percent }
 \@writefile{toc}{\contentsline {section}{\numberline {III}MTPA using PI Controller for Dynamic Advance Angle Compensation}{5}{}\protected@file@percent }
 \newlabel{sec:mtpa_control}{{III}{5}{}{section.3}{}}
@@ -114,11 +118,11 @@
 \newlabel{eq:control_error@cref}{{[equation][4][3]3.4}{[1][5][]5}{}{}{}}
 \newlabel{eq:pi_controller}{{3.5}{5}{}{equation.3.5}{}}
 \newlabel{eq:pi_controller@cref}{{[equation][5][3]3.5}{[1][5][]5}{}{}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {6}{\ignorespaces Flowchart of the MTPA PI controller. The corrected Hall signals provide accurate $\hat  {\theta }_r$ for computing $i_{ds}$ from phase currents. The average $\bar  {i}_{ds}$ is fed to the PI controller, which outputs compensation angle $\Delta \phi _v$ to maintain MTPA.}}{5}{}\protected@file@percent }
-\newlabel{fig:mtpa_diagram}{{6}{5}{}{figure.6}{}}
-\newlabel{fig:mtpa_diagram@cref}{{[figure][6][]6}{[1][5][]5}{}{}{}}
 \citation{b1}
 \citation{b1,b2}
+\@writefile{lof}{\contentsline {figure}{\numberline {6}{\ignorespaces Flowchart of the MTPA PI controller. The corrected Hall signals provide accurate $\hat  {\theta }_r$ for computing $i_{ds}$ from phase currents. The average $\bar  {i}_{ds}$ is fed to the PI controller, which outputs compensation angle $\Delta \phi _v$ to maintain MTPA.}}{6}{}\protected@file@percent }
+\newlabel{fig:mtpa_diagram}{{6}{6}{}{figure.6}{}}
+\newlabel{fig:mtpa_diagram@cref}{{[figure][6][]6}{[1][5][]6}{}{}{}}
 \newlabel{eq:total_firing_angle}{{3.6}{6}{}{equation.3.6}{}}
 \newlabel{eq:total_firing_angle@cref}{{[equation][6][3]3.6}{[1][5][]6}{}{}{}}
 \newlabel{eq:combined_timing}{{3.7}{6}{}{equation.3.7}{}}
@@ -133,22 +137,20 @@
 \@writefile{lof}{\contentsline {figure}{\numberline {8}{\ignorespaces Simulated phase current $i_{a}$, d-axis current $i_{d}$, and time averaged d-axis current $i_{\bar  {d}}$ for (a) Filter, (b) MTPA.}}{6}{}\protected@file@percent }
 \newlabel{fig:lut_vs_filter_verification}{{8}{6}{}{figure.8}{}}
 \newlabel{fig:lut_vs_filter_verification@cref}{{[figure][8][]8}{[1][6][]6}{}{}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {IV-B}}Transient Performance}{6}{}\protected@file@percent }
 \@writefile{lof}{\contentsline {figure}{\numberline {9}{\ignorespaces Alignment of the fundamental phase current and back-EMF: (a) uncompensated; (b) LUT only; (c) LUT + MTPA controller.}}{7}{}\protected@file@percent }
 \newlabel{fig:alignment}{{9}{7}{}{figure.9}{}}
 \newlabel{fig:alignment@cref}{{[figure][9][]9}{[1][6][]7}{}{}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {IV-B}}Transient Performance}{7}{}\protected@file@percent }
 \@writefile{lof}{\contentsline {figure}{\numberline {10}{\ignorespaces Comparison of Torque Generation Efficiency (Torque Constant $K_t$). The proposed LUT + MTPA method achieves the highest torque-per-ampere, indicating optimal alignment.}}{7}{}\protected@file@percent }
 \newlabel{fig:results_torque}{{10}{7}{}{figure.10}{}}
-\newlabel{fig:results_torque@cref}{{[figure][10][]10}{[1][6][]7}{}{}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {11}{\ignorespaces Simulated speed response step increase. (a) with ideal Hall sensor placement; (b) Comparison of averaging filters vs. proposed LUT correction. The LUT method achieves faster convergence.}}{7}{}\protected@file@percent }
-\newlabel{fig:speed_step}{{11}{7}{}{figure.11}{}}
-\newlabel{fig:speed_step@cref}{{[figure][11][]11}{[1][6][]7}{}{}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {12}{\ignorespaces Simulated response to a load step increase: (a) speed response; (b) electromagnetic torque response. The proposed LUT correction (yellow trace) shows superior dynamic tracking.}}{7}{}\protected@file@percent }
-\newlabel{fig:load_step}{{12}{7}{}{figure.12}{}}
-\newlabel{fig:load_step@cref}{{[figure][12][]12}{[1][7][]7}{}{}{}}
+\newlabel{fig:results_torque@cref}{{[figure][10][]10}{[1][7][]7}{}{}{}}
 \@writefile{toc}{\contentsline {section}{\numberline {V}Conclusion}{7}{}\protected@file@percent }
 \newlabel{sec:conclusion}{{V}{7}{}{section.5}{}}
 \newlabel{sec:conclusion@cref}{{[section][5][]V}{[1][7][]7}{}{}{}}
+\@writefile{toc}{\contentsline {section}{Appendix: Motor Parameters}{7}{}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {I}{\ignorespaces Motor Parameters}}{7}{}\protected@file@percent }
+\newlabel{tab:motor_params}{{I}{7}{}{table.1}{}}
+\newlabel{tab:motor_params@cref}{{[table][1][]I}{[1][7][]7}{}{}{}}
 \bibcite{b1}{1}
 \bibcite{b2}{2}
 \bibcite{b3}{3}
@@ -162,9 +164,17 @@
 \bibcite{b11}{11}
 \bibcite{b12}{12}
 \bibcite{b13}{13}
-\@writefile{toc}{\contentsline {section}{Appendix: Motor Parameters}{8}{}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {I}{\ignorespaces Motor Parameters}}{8}{}\protected@file@percent }
-\newlabel{tab:motor_params}{{I}{8}{}{table.1}{}}
-\newlabel{tab:motor_params@cref}{{[table][1][]I}{[1][8][]8}{}{}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {11}{\ignorespaces Simulated speed response step increase. (a) with ideal Hall sensor placement; (b) Comparison of averaging filters vs. proposed LUT correction. The LUT method achieves faster convergence.}}{8}{}\protected@file@percent }
+\newlabel{fig:startup}{{11}{8}{}{figure.11}{}}
+\newlabel{fig:startup@cref}{{[figure][11][]11}{[1][7][]8}{}{}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {12}{\ignorespaces Simulated response to a load step increase: (a) speed response; (b) electromagnetic torque response. The proposed LUT correction (yellow trace) shows superior dynamic tracking.}}{8}{}\protected@file@percent }
+\newlabel{fig:load_step}{{12}{8}{}{figure.12}{}}
+\newlabel{fig:load_step@cref}{{[figure][12][]12}{[1][7][]8}{}{}{}}
+\@writefile{toc}{\contentsline {section}{Appendix: PI Controller Gains}{8}{}\protected@file@percent }
+\newlabel{sec: PI_gains}{{A}{8}{}{section.Appendix.A}{}}
+\newlabel{sec: PI_gains@cref}{{[section][1][]A}{[1][7][]8}{}{}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {II}{\ignorespaces PI Controller Gains}}{8}{}\protected@file@percent }
+\newlabel{tab:pi_gains}{{II}{8}{}{table.2}{}}
+\newlabel{tab:pi_gains@cref}{{[table][2][]II}{[1][7][]8}{}{}{}}
 \@writefile{toc}{\contentsline {section}{References}{8}{}\protected@file@percent }
 \gdef \@abspage@last{8}

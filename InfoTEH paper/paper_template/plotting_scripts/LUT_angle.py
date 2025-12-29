@@ -43,7 +43,7 @@ for start_angle, width_angle, val_deg, roman, bg_color in zip(starts_rad, widths
 
     # B. Angle Value (Data)
     ax.text(center_angle, 4.5, f"{val_deg:.3f}°", 
-            ha='center', va='center', fontsize=14, fontweight='bold', 
+            ha='center', va='center', fontsize=20, fontweight='bold', 
             color=main_text_color, rotation=0)
 
 # --- 6. Clean Up ---
@@ -53,7 +53,7 @@ ax.grid(False)
 ax.spines['polar'].set_visible(False)
 
 # Update Title
-plt.title("LUT angle", va='bottom', fontsize=16, fontweight='bold', y=1.02, color='#333333')
+# plt.title("LUT angle", va='bottom', fontsize=16, fontweight='bold', y=1.02, color='#333333')
 
 plt.tight_layout()
 
