@@ -15,7 +15,9 @@ Arrow_86EMB3S98F_specs;
 hall_errors_ON = 1;
 % hall_errors = (pi/180)*[-3,5,-4];
 % hall_errors = (pi/180)*[9,5,2];
-hall_errors = (pi/180)*[9,-1,7];
+hall_errors = (pi/180)*[9,-1,7];  % Motor 1
+% hall_errors = (pi/180)*[5,0.5,-6.5];  % Motor 2
+% hall_errors = (pi/180)*[2,-3.5,8];  % Motor 3
 closed_loop = 0;
 control_mode = 1; %     0 = torque control ; 1 = speed control
 

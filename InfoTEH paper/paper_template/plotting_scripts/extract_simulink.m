@@ -1,5 +1,4 @@
 clc;
-
 %% 0. Grab logsout and yout
 logsout_ds = [];
 if exist('out','var') && isa(out, 'Simulink.SimulationOutput')
@@ -19,24 +18,19 @@ get_sig_safe = @(ds, name) get_safe(ds, name);
 
 % --- Currents ---
 i_a = get_sig_safe(logsout_ds, 'i_a'); 
-% Fallback: sometimes named 'i_as' or 'i_a [A]'
 if isempty(i_a), i_a = get_sig_safe(logsout_ds, 'i_as'); end
-
 i_b = get_sig_safe(logsout_ds, 'i_b');
 i_c = get_sig_safe(logsout_ds, 'i_c');
-
 i_ds = get_sig_safe(logsout_ds, 'i_ds');
-% Handle the typo "avs" seen in your screenshot
+
+% Handle the typo "avs"
 i_ds_avg = get_sig_safe(logsout_ds, 'i_ds_avg'); 
 if isempty(i_ds_avg), i_ds_avg = get_sig_safe(logsout_ds, 'i_ds_avs'); end
 
 % --- Voltage / Back EMF ---
-% Primary goal: get e_a
 e_a = get_sig_safe(logsout_ds, 'e_a');
 if isempty(e_a), e_a = get_sig_safe(logsout_ds, 'e_as'); end 
 if isempty(e_a), e_a = get_sig_safe(logsout_ds, 'BackEmf'); end
-
-% Also grab e_q just in case
 e_q = get_sig_safe(logsout_ds, 'e_q');
 
 % --- Mechanical ---
@@ -45,6 +39,9 @@ rotor_speed = get_sig_safe(logsout_ds, 'rotor speed');
 theta_r = get_sig_safe(logsout_ds, 'theta_r');
 T_e = get_sig_safe(logsout_ds, 'T_e');
 
+% --- ISR / Digital Signals ---
+hardware_ISR = get_sig_safe(logsout_ds, 'hardware_ISR');
+software_ISR = get_sig_safe(logsout_ds, 'software_ISR');
 
 % --- Fallback: Check "yout" (Outports) if logsout missed them ---
 if ~isempty(yout_ds)
@@ -54,6 +51,9 @@ if ~isempty(yout_ds)
     if isempty(e_a), e_a = get_sig_safe(yout_ds, 'e_a'); end
     if isempty(omega_r), omega_r = get_sig_safe(yout_ds, 'omega_r'); end
     if isempty(rotor_speed), rotor_speed = get_sig_safe(yout_ds, 'rotor speed'); end
+    % Fallback for ISRs
+    if isempty(hardware_ISR), hardware_ISR = get_sig_safe(yout_ds, 'hardware_ISR'); end
+    if isempty(software_ISR), software_ISR = get_sig_safe(yout_ds, 'software_ISR'); end
 end
 
 % --- DEBUG SECTION ---
@@ -61,6 +61,9 @@ missing_signals = {};
 if isempty(e_a), missing_signals{end+1} = 'e_a'; end
 if isempty(omega_r), missing_signals{end+1} = 'omega_r'; end
 if isempty(i_a), missing_signals{end+1} = 'i_a'; end
+% Warn if ISRs are missing (optional, remove if they aren't strictly required)
+if isempty(hardware_ISR), missing_signals{end+1} = 'hardware_ISR'; end
+if isempty(software_ISR), missing_signals{end+1} = 'software_ISR'; end
 
 if ~isempty(missing_signals)
     fprintf('\n!!! WARNING: SIGNALS MISSING !!!\n');
@@ -81,6 +84,8 @@ if ~isempty(i_a)
     data_struct.time = i_a.Time;
 elseif ~isempty(e_a)
     data_struct.time = e_a.Time;
+elseif ~isempty(hardware_ISR) % Fallback to ISR time if main signals are missing
+    data_struct.time = hardware_ISR.Time;
 end
 
 % Pack data
@@ -95,6 +100,10 @@ if ~isempty(theta_r), data_struct.theta_r = theta_r.Data; end
 if ~isempty(T_e), data_struct.T_e = T_e.Data; end
 if ~isempty(i_ds), data_struct.i_ds = i_ds.Data; end
 if ~isempty(i_ds_avg), data_struct.i_ds_avg = i_ds_avg.Data; end
+
+% Pack ISR data
+if ~isempty(hardware_ISR), data_struct.hardware_ISR = hardware_ISR.Data; end
+if ~isempty(software_ISR), data_struct.software_ISR = software_ISR.Data; end
 
 current_script_path = fileparts(mfilename('fullpath'));
 if isempty(current_script_path), current_script_path = pwd; end

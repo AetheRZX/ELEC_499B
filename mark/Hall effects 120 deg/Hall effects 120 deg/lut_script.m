@@ -159,5 +159,5 @@ phi_corr_LUT = phi_LUT_rad;
 phi_corr_LUT_param = Simulink.Parameter(phi_corr_LUT);
 phi_corr_LUT_param.CoderInfo.StorageClass = 'ExportedGlobal';
 
-save('Hall_LUT_Config.mat', 'phi_corr_LUT_param');
+save('Hall_LUT_Config_M1.mat', 'phi_corr_LUT_param');
 fprintf('Saved to Hall_LUT_Config.mat\n');
