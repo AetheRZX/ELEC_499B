@@ -43,7 +43,7 @@ def compute_speed_mixed(time, hw_edges, sw_edges, lut_angles_deg, shift=0):
         # We want interval ending at SW[i] and starting at HW[i-1]
         
         idx_sw_curr = sw_edges[i]
-        idx_hw_prev = hw_edges[i-1]
+        idx_hw_prev = hw_edges[i]
         
         # Check causality: SW must be after HW
         # Also, HW[i-1] must be before SW[i]

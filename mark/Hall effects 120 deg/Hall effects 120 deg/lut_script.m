@@ -2,7 +2,7 @@ clc;
 
 %% 0. Mode selection
 % If false -> ignore logged omega and compute omega from 60 deg / sector time.
-USE_TRUE_OMEGA = true; 
+USE_TRUE_OMEGA = false; 
 
 %% 1. Get the logsout Dataset
 if exist('out','var') && isa(out, 'Simulink.SimulationOutput') && isprop(out,'logsout')
