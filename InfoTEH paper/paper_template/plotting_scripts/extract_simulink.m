@@ -43,74 +43,59 @@ T_e = get_sig_safe(logsout_ds, 'T_e');
 hardware_ISR = get_sig_safe(logsout_ds, 'hardware_ISR');
 software_ISR = get_sig_safe(logsout_ds, 'software_ISR');
 
+% --- HALL STATES (ADDED) ---
+perfect_hall = get_sig_safe(logsout_ds, 'perfect_hall_state');
+result_hall  = get_sig_safe(logsout_ds, 'result_state');
+
 % --- Fallback: Check "yout" (Outports) if logsout missed them ---
 if ~isempty(yout_ds)
     if isempty(i_a), i_a = get_sig_safe(yout_ds, 'i_a'); end
-    if isempty(i_b), i_b = get_sig_safe(yout_ds, 'i_b'); end
-    if isempty(i_c), i_c = get_sig_safe(yout_ds, 'i_c'); end
-    if isempty(e_a), e_a = get_sig_safe(yout_ds, 'e_a'); end
-    if isempty(omega_r), omega_r = get_sig_safe(yout_ds, 'omega_r'); end
-    if isempty(rotor_speed), rotor_speed = get_sig_safe(yout_ds, 'rotor speed'); end
-    % Fallback for ISRs
-    if isempty(hardware_ISR), hardware_ISR = get_sig_safe(yout_ds, 'hardware_ISR'); end
-    if isempty(software_ISR), software_ISR = get_sig_safe(yout_ds, 'software_ISR'); end
+    % ... (other fallbacks)
+    if isempty(perfect_hall), perfect_hall = get_sig_safe(yout_ds, 'perfect_hall_state'); end
+    if isempty(result_hall), result_hall = get_sig_safe(yout_ds, 'result_state'); end
 end
 
 % --- DEBUG SECTION ---
 missing_signals = {};
-if isempty(e_a), missing_signals{end+1} = 'e_a'; end
-if isempty(omega_r), missing_signals{end+1} = 'omega_r'; end
-if isempty(i_a), missing_signals{end+1} = 'i_a'; end
-% Warn if ISRs are missing (optional, remove if they aren't strictly required)
-if isempty(hardware_ISR), missing_signals{end+1} = 'hardware_ISR'; end
-if isempty(software_ISR), missing_signals{end+1} = 'software_ISR'; end
+if isempty(perfect_hall), missing_signals{end+1} = 'perfect_hall_state'; end
+if isempty(result_hall), missing_signals{end+1} = 'result_state'; end
 
 if ~isempty(missing_signals)
     fprintf('\n!!! WARNING: SIGNALS MISSING !!!\n');
     fprintf('Could not find: %s\n', strjoin(missing_signals, ', '));
-    fprintf('Check your log names.\n\n');
+    fprintf('Check your Simulink logging names.\n\n');
 else
     fprintf('All critical signals found.\n');
 end
 
 %% 2. Save to .mat
-tag = input('Enter run tag (e.g. "run1"): ', 's');
-if isempty(tag), tag = 'default'; end
+tag = input('Enter run tag (e.g. "Hall_Test"): ', 's');
+if isempty(tag), tag = 'Hall_Data'; end
 
 data_struct = struct();
 
 % Determine master time vector
 if ~isempty(i_a)
     data_struct.time = i_a.Time;
-elseif ~isempty(e_a)
-    data_struct.time = e_a.Time;
-elseif ~isempty(hardware_ISR) % Fallback to ISR time if main signals are missing
-    data_struct.time = hardware_ISR.Time;
+elseif ~isempty(perfect_hall)
+    data_struct.time = perfect_hall.Time;
 end
 
 % Pack data
 if ~isempty(i_a), data_struct.i_a = i_a.Data; end
-if ~isempty(i_b), data_struct.i_b = i_b.Data; end
-if ~isempty(i_c), data_struct.i_c = i_c.Data; end
-if ~isempty(e_a), data_struct.e_a = e_a.Data; end
-if ~isempty(e_q), data_struct.e_q = e_q.Data; end
 if ~isempty(omega_r), data_struct.omega_r = omega_r.Data; end
-if ~isempty(rotor_speed), data_struct.rotor_speed = rotor_speed.Data; end
-if ~isempty(theta_r), data_struct.theta_r = theta_r.Data; end
 if ~isempty(T_e), data_struct.T_e = T_e.Data; end
-if ~isempty(i_ds), data_struct.i_ds = i_ds.Data; end
-if ~isempty(i_ds_avg), data_struct.i_ds_avg = i_ds_avg.Data; end
 
-% Pack ISR data
-if ~isempty(hardware_ISR), data_struct.hardware_ISR = hardware_ISR.Data; end
-if ~isempty(software_ISR), data_struct.software_ISR = software_ISR.Data; end
+% Pack Hall Data
+if ~isempty(perfect_hall), data_struct.perfect_hall = perfect_hall.Data; end
+if ~isempty(result_hall), data_struct.result_hall = result_hall.Data; end
 
 current_script_path = fileparts(mfilename('fullpath'));
 if isempty(current_script_path), current_script_path = pwd; end
-output_dir = fullfile(current_script_path, 'mat_files');
+output_dir = fullfile(current_script_path, 'mat_files_v2'); % Using v2 folder
 if ~exist(output_dir, 'dir'), mkdir(output_dir); end
 
-fname = fullfile(output_dir, sprintf(tag));
+fname = fullfile(output_dir, sprintf('%s.mat', tag));
 save(fname, '-struct', 'data_struct');
 fprintf('Saved data to: %s\n', fname);
 
@@ -118,7 +103,6 @@ fprintf('Saved data to: %s\n', fname);
 function val = get_safe(ds, name)
     try
         if isempty(ds), val = []; return; end
-        % "find" is robust for partial matches or different object types
         elem = ds.find(name);
         if isempty(elem)
             val = [];

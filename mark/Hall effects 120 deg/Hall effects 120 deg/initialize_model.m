@@ -15,6 +15,7 @@ Arrow_86EMB3S98F_specs;
 hall_errors_ON = 1;
 % hall_errors = (pi/180)*[-3,5,-4];
 % hall_errors = (pi/180)*[9,5,2];
+
 hall_errors = (pi/180)*[9,-1,7];  % Motor 1
 % hall_errors = (pi/180)*[5,0.5,-6.5];  % Motor 2
 % hall_errors = (pi/180)*[2,-3.5,8];  % Motor 3
@@ -25,7 +26,8 @@ control_mode = 1; %     0 = torque control ; 1 = speed control
 R_vs = 1e6; % ghost resistance from switch to neutral 
 
 % define mechanical constants
-J_t = 12e-4; %        total moment of inertia
+% J_t = 12e-4; %        total moment of inertia
+J_t = 1.2e-4; %         Matthew's moment of inertia
 D_m = 1e-3; %        damping coefficient (due to friction)
 T_m = 1.53; %        load torque
 
@@ -66,6 +68,7 @@ end
 assignin('base','use_LUT',0);               % 0 = filter, 1 = LUT
 
 % For transient analysis
-t_vol_step = 0.55;
+t_vol_step = 1.6;
 V_step_final = 60;
-MTPA_activation_time = 0.6;
+MTPA_activation_time = .6;
+filter_mode_var = 2;

@@ -4,7 +4,7 @@ import os
 
 # --- 1. Define Data ---
 # angles_deg = np.array([56.332, 63.324, 60.326, 56.33, 63.326, 60.332])
-angles_deg = np.array([55.998, 57.995, 65.991, 55.998, 57.994, 65.99])
+angles_deg = np.array([56.0118, 58.0088, 66.0015, 56.0012, 58.0077, 66.0060])
 
 N = len(angles_deg)
 roman_labels = ['I', 'II', 'III', 'IV', 'V', 'VI']
@@ -58,7 +58,9 @@ ax.spines['polar'].set_visible(False)
 plt.tight_layout()
 
 # --- 7. Save to Folder ---
-output_folder = 'figures'
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+PARENT_DIR = os.path.dirname(BASE_DIR)
+output_folder = os.path.join(PARENT_DIR, 'figures')
 if not os.path.exists(output_folder):
     os.makedirs(output_folder)
 

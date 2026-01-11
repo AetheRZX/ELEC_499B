@@ -161,3 +161,4 @@ phi_corr_LUT_param.CoderInfo.StorageClass = 'ExportedGlobal';
 
 save('Hall_LUT_Config_M1.mat', 'phi_corr_LUT_param');
 fprintf('Saved to Hall_LUT_Config.mat\n');
+
